@@ -11,6 +11,6 @@ setup(name='app-server',
       description='Virtual Game Controller',
       author='Kevin Jossendal',
       author_email='kjossendal@gmail.com',
-      url='https://github.com/aenglander/flask-in-a-flash',
+      url='https://github.com/JossendalDevelopment/Virtual-game-controller',
       packages=['server'],
       )
