@@ -1,0 +1,9 @@
+{
+    "keyMappings": [
+        {
+            "buttonName": "Button 1",
+            "key": "Control",
+            "keyCode": 17
+        }
+    ]
+}

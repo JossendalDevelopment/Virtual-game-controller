@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.4.3",
+    "socket.io-client": "^2.3.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {
@@ -27,7 +28,7 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/base"
     ],
     "rules": {},
     "parserOptions": {
