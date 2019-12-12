@@ -1,32 +1,47 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-      <div 
-        v-for="(item, index) of keyMappings" 
-        :key="index"
-        style="display: flex; flex-direction: row;"
-      >
-        <Button :key="index" @click="(item) => handleClick(item)">
-          {{ item.buttonName }}
-        </Button>
-        <p>Bound to {{ item.key }} - {{ item.keyCode }}</p>
-      </div>
-    <!-- <pre>{{ keyboardLayout }}</pre> -->
-    <div 
-      style="display: flex; flex-direction: row; justify-content: center;"
-      v-for="(row, index) in keyboardLayout" :key="index + '00'">
-      <template v-for="(key, index) in row">
-        <KeyboardButton 
-          v-if="typeof key !== 'object'" 
-          :key="index + '55'" 
-          :data="key"
-          v-on:pressed="(event) => handleClick(event)" 
+    <div id="app" style="position: relative;">
+        <div 
+            style="border-radius: 50%; width: 50px; height: 50px; background-color: red; position: absolute; top: 30px; right: 30px;" 
+            @click="editing = !editing">
+            <p>Edit</p>
+        </div>
+        <div 
+            style="border-radius: 50%; width: 50px; height: 50px; background-color: red; position: absolute; top: 85px; right: 30px;" 
+            @click="keyMappings = [...keyMappings, {
+                'buttonName': `Button ${keyMappings.length + 1}`,
+                'key': 'Control',
+                'keyCode': 17,
+                'transform': 'matrix(1,0,0,1,243,-11) translate(10px, 10px)'
+            }]"
         >
-          {{ key }}
-        </KeyboardButton>
-      </template>
+            <p>Add</p>
+        </div>
+        <div 
+            v-for="(item, index) of keyMappings" 
+            :key="index"
+            style="display: flex; flex-direction: row;"
+        >
+            <VirtualButton :data="item" :editing="editing" />
+            <!-- <Button :key="index" @click="(item) => handleClick(item)">
+            {{ item.buttonName }}
+            </Button> -->
+            <!-- <p>Bound to {{ item.key }} - {{ item.keyCode }}</p> -->
+        </div>
+        <!-- <div 
+        style="display: flex; flex-direction: row; justify-content: center;"
+        v-for="(row, index) in keyboardLayout" :key="index + '00'">
+        <template v-for="(key, index) in row">
+            <KeyboardButton 
+            v-if="typeof key !== 'object'" 
+            :key="index + '55'" 
+            :data="key"
+            v-on:pressed="(event) => handleClick(event)" 
+            >
+            {{ key }}
+            </KeyboardButton>
+        </template>
+        </div> -->
     </div>
-  </div>
 </template>
 
 <script>
@@ -35,16 +50,21 @@ import KeyMappings from './keyMappings.json';
 import KeyboardLayout from './keyboardLayout.json';
 
 import KeyboardButton from './components/button.vue';
+import VirtualButton from './components/virtual-button.vue';
 
 export default {
   name: 'app',
-  components: { KeyboardButton },
+  components: { 
+    KeyboardButton,
+    VirtualButton
+  },
   data: () => ({
     socket: null,
     keyListeners: null,
     keysPressed: [],
     keyMappings: KeyMappings.keyMappings,
-    keyboardLayout: KeyboardLayout
+    keyboardLayout: KeyboardLayout,
+    editing: false,
   }),
   created() {
     this.socket = io(`http://${document.domain}:${8765}`);
@@ -99,12 +119,20 @@ export default {
 </script>
 
 <style>
+body {
+    background: url('~@/assets/stars-backgrounds.jpg');
+    /* background: url(https://images.unsplash.com/photo-1544306094-e2dcf9479da3) no-repeat; */
+    background-size: cover;
+    margin: 0;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    height: 100vh;
+    background-color: rgba(225, 225, 225, .15);
+    backdrop-filter: blur(3px);
 }
 </style>

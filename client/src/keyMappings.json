@@ -1,9 +1,16 @@
 {
-    "keyMappings": [
-        {
-            "buttonName": "Button 1",
-            "key": "Control",
-            "keyCode": 17
-        }
-    ]
+  "keyMappings": [
+    {
+      "buttonName": "Button 1",
+      "key": "Control",
+      "keyCode": 17,
+      "transform": "matrix(1,0,0,1,243,-11) translate(-6px, 251px)"
+    },
+    {
+      "buttonName": "Button 2",
+      "key": "Escape",
+      "keyCode": 27,
+      "transform": "matrix(1,0,0,1,243,-11) translate(60px, 251px)"
+    }
+  ]
 }
