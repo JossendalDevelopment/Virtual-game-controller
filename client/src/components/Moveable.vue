@@ -1,98 +1,98 @@
 <template>
   <div>
-    <slot/>
+    <slot />
   </div>
 </template>
 <script>
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Moveable from 'moveable';
+import Moveable from "moveable";
 
 const MOVEABLE_EVENTS = [
-  'click',
-  'clickGroup',
+  "click",
+  "clickGroup",
 
-  'drag',
-  'dragEnd',
-  'dragStart',
-  'dragGroup',
-  'dragGroupEnd',
-  'dragGroupStart',
+  "drag",
+  "dragEnd",
+  "dragStart",
+  "dragGroup",
+  "dragGroupEnd",
+  "dragGroupStart",
 
-  'pinch',
-  'pinchEnd',
-  'pinchGroup',
-  'pinchGroupEnd',
-  'pinchGroupStart',
-  'pinchStart',
+  "pinch",
+  "pinchEnd",
+  "pinchGroup",
+  "pinchGroupEnd",
+  "pinchGroupStart",
+  "pinchStart",
 
-  'render',
-  'renderEnd',
-  'renderGroup',
-  'renderGroupEnd',
-  'renderGroupStart',
-  'renderStart',
+  "render",
+  "renderEnd",
+  "renderGroup",
+  "renderGroupEnd",
+  "renderGroupStart",
+  "renderStart",
 
-  'resize',
-  'resizeEnd',
-  'resizeGroup',
-  'resizeGroupEnd',
-  'resizeGroupStart',
-  'resizeStart',
+  "resize",
+  "resizeEnd",
+  "resizeGroup",
+  "resizeGroupEnd",
+  "resizeGroupStart",
+  "resizeStart",
 
-  'rotate',
-  'rotateEnd',
-  'rotateGroup',
-  'rotateGroupEnd',
-  'rotateGroupStart',
-  'rotateStart',
+  "rotate",
+  "rotateEnd",
+  "rotateGroup",
+  "rotateGroupEnd",
+  "rotateGroupStart",
+  "rotateStart",
 
-  'scale',
-  'scaleEnd',
-  'scaleGroup',
-  'scaleGroupEnd',
-  'scaleGroupStart',
-  'scaleStart',
+  "scale",
+  "scaleEnd",
+  "scaleGroup",
+  "scaleGroupEnd",
+  "scaleGroupStart",
+  "scaleStart",
 
-  'scroll',
-  'scrollGroup',
+  "scroll",
+  "scrollGroup",
 
-  'warp',
-  'warpEnd',
-  'warpStart',
+  "warp",
+  "warpEnd",
+  "warpStart"
 ];
 
 const MOVEABLE_PROPS = [
-  'draggable',
-  'resizable',
-  'scalable',
-  'rotatable',
-  'warpable',
-  'pinchable',
-  'snappable',
-  'ables',
-  'origin',
-  'className',
-  'throttleDrag',
-  'throttleResize',
-  'throttleScale',
-  'throttleRotate',
-  'keepRatio',
-  'edge',
-  'pinchThreshold',
-  'snapCenter',
-  'snapThreshold',
-  'horizontalGuidelines',
-  'verticalGuidelines',
-  'elementGuidelines',
-  'bounds',
-  'dragArea',
-  'rotationPosition',
-  'baseDirection',
-  'renderDirections',
-  'defaultGroupRotate',
-  'scrollable',
-  'scrollThreshold',
-  'getScrollPosition',
+  "draggable",
+  "resizable",
+  "scalable",
+  "rotatable",
+  "warpable",
+  "pinchable",
+  "snappable",
+  "ables",
+  "origin",
+  "className",
+  "throttleDrag",
+  "throttleResize",
+  "throttleScale",
+  "throttleRotate",
+  "keepRatio",
+  "edge",
+  "pinchThreshold",
+  "snapCenter",
+  "snapThreshold",
+  "horizontalGuidelines",
+  "verticalGuidelines",
+  "elementGuidelines",
+  "bounds",
+  "dragArea",
+  "rotationPosition",
+  "baseDirection",
+  "renderDirections",
+  "defaultGroupRotate",
+  "scrollable",
+  "scrollThreshold",
+  "getScrollPosition"
 ];
 
 const watchReactiveProp = (key, deep) => ({
@@ -101,16 +101,17 @@ const watchReactiveProp = (key, deep) => ({
     if (existingValue === newValue) return;
     this.moveable[key] = newValue;
   },
-  deep,
+  deep
 });
 
-const watchMoveableProps = () => MOVEABLE_PROPS.reduce((acc, prop) => {
-  acc[prop] = watchReactiveProp(prop, true);
-  return acc;
-}, {});
+const watchMoveableProps = () =>
+  MOVEABLE_PROPS.reduce((acc, prop) => {
+    acc[prop] = watchReactiveProp(prop, true);
+    return acc;
+  }, {});
 
 export default {
-  name: 'Moveable',
+  name: "Moveable",
   inheritAttrs: false,
   props: {
     draggable: Boolean,
@@ -125,7 +126,7 @@ export default {
     className: String,
     container: {
       type: [HTMLElement, SVGElement],
-      default: () => document.body,
+      default: () => document.body
     },
     throttleDrag: Number,
     throttleResize: Number,
@@ -148,33 +149,33 @@ export default {
     scrollable: Boolean,
     scrollContainer: [HTMLElement, SVGElement],
     scrollThreshold: Number,
-    getScrollPosition: Function,
+    getScrollPosition: Function
   },
   methods: {
     updateRec() {
       this.moveable.updateRect();
-    },
+    }
   },
   mounted() {
     this.moveable = new Moveable(this.$props.container, {
       ...this.$props,
-      target: this.$el,
+      target: this.$el
     });
-    MOVEABLE_EVENTS.forEach(event => (
+    MOVEABLE_EVENTS.forEach(event =>
       this.moveable.on(event, this.$emit.bind(this, event))
-    ));
-    window.addEventListener('resize', this.updateRec, { passive: true });
-    this.$emit('render', this.$el)
+    );
+    window.addEventListener("resize", this.updateRec, { passive: true });
+    this.$emit("render", this.$el);
   },
   watch: {
-    ...watchMoveableProps(),
+    ...watchMoveableProps()
   },
   beforeDestroy() {
-    MOVEABLE_EVENTS.forEach(event => (
+    MOVEABLE_EVENTS.forEach(event =>
       this.moveable.off(event, this.$emit.bind(this, event))
-    ));
-    window.removeEventListener('resize', this.updateRec);
+    );
+    window.removeEventListener("resize", this.updateRec);
     this.moveable.destroy();
-  },
+  }
 };
 </script>

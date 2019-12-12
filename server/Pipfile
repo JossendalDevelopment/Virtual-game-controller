@@ -10,6 +10,7 @@ websockets = "*"
 flask-socketio = "*"
 flask = "*"
 secrets = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

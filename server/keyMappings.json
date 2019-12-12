@@ -4,13 +4,13 @@
       "buttonName": "Button 1",
       "key": "Control",
       "keyCode": 17,
-      "transform": "matrix(1,0,0,1,243,-11) translate(-6px, 251px)"
+      "transform": "matrix(1, 0, 0, 1, 237, 240) translate(-6px, -112px)"
     },
     {
       "buttonName": "Button 2",
       "key": "Escape",
       "keyCode": 27,
-      "transform": "matrix(1,0,0,1,243,-11) translate(60px, 251px)"
+      "transform": "matrix(1, 0, 0, 1, 415, 127) translate(53px, -13px)"
     }
   ]
 }
