@@ -12,7 +12,6 @@ flask = "*"
 flask-cors = "*"
 keyboard = "*"
 secrets = "*"
-greenlet = "*"
 
 [requires]
 python_version = "3.8"
