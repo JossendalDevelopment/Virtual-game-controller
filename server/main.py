@@ -1,12 +1,16 @@
 import asyncio
 import ssl
-import websockets
 import secrets
 import json
+import keyboard
+import time
 
 from flask import Flask, request, jsonify, url_for, Response
 from flask_cors import CORS
 from flask_socketio import SocketIO
+
+import eventlet
+eventlet.monkey_patch()
 
 # Create the Flask app
 app = Flask(__name__)
@@ -21,7 +25,7 @@ app.config['SECRET_KEY'] = "".join([chr(secrets.randbits(8)) for x in range(32)]
 #                  b"\xc2\x9d\xc3\xb5\xc2\x86L^0}\x12,\\\x01\xc2\xa8P\xc3\xb2" \
 #                  b"\xc2\xber@\xc3\xaf\x02(\xc2\xa8\t"
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 def message_received(methods=['GET', 'POST']):
     print('message was received!!!')
@@ -59,9 +63,11 @@ def handle_json(json):
 @socketio.on('keypress')
 def handle_keypress(json_data, methods=['GET', 'POST']):
     print('received keypress: ', json_data)
+    time.sleep(3)
+    keyboard.press_and_release(json_data['key'])
     socketio.emit('keypress-response', json_data, callback=message_received)
 
 if __name__ == "__main__":
     # run_server()
     app.run()
-    socketio.run(app, debug=True, host='localhost', port=8765)
+    socketio.run(app, debug=False, host='0.0.0.0', port=8765)

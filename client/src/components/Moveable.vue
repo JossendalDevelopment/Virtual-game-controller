@@ -165,7 +165,6 @@ export default {
       this.moveable.on(event, this.$emit.bind(this, event))
     );
     window.addEventListener("resize", this.updateRec, { passive: true });
-    this.$emit("render", this.$el);
   },
   watch: {
     ...watchMoveableProps()

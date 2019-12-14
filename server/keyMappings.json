@@ -1,16 +1,36 @@
 {
   "keyMappings": [
     {
-      "buttonName": "Button 1",
-      "key": "Control",
-      "keyCode": 17,
-      "transform": "matrix(1, 0, 0, 1, 237, 240) translate(-6px, -112px)"
+      "buttonName": "Q key",
+      "id": 0,
+      "key": "q",
+      "keyCode": "KeyQ",
+      "style": {
+        "x": 448,
+        "y": 73,
+        "width": 231.0749969482422,
+        "height": 184.0749969482422,
+        "top": 73,
+        "right": 679.0749969482422,
+        "bottom": 257.0749969482422,
+        "left": 448
+      }
     },
     {
-      "buttonName": "Button 2",
+      "buttonName": "Esc",
+      "id": 1,
       "key": "Escape",
-      "keyCode": 27,
-      "transform": "matrix(1, 0, 0, 1, 415, 127) translate(53px, -13px)"
+      "keyCode": "Escape",
+      "style": {
+        "x": 62,
+        "y": 254.1999969482422,
+        "width": 296,
+        "height": 96,
+        "top": 254.1999969482422,
+        "right": 358,
+        "bottom": 350.1999969482422,
+        "left": 62
+      }
     }
   ]
 }

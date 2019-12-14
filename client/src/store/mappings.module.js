@@ -13,7 +13,7 @@ export const mappings = {
   },
   mutations: {
     setUserBindings(state, payload) {
-      state.userBindings = payload.bindings;
+      state.userBindings = payload;
     },
     getUserBindings(state) {
       return state.userBindings;
