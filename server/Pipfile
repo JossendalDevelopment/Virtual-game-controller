@@ -6,13 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-websockets = "*"
 flask-socketio = "*"
 flask = "*"
 flask-cors = "*"
 keyboard = "*"
 secrets = "*"
-greenlet = "*"
 
 [requires]
 python_version = "3.8"

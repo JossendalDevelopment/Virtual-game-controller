@@ -174,7 +174,8 @@ export default {
 <style>
 body {
   box-sizing: border-box;
-  background: url("~@/assets/stars-backgrounds.jpg");
+  background: rgb(31, 31, 31);
+  /* background: url("~@/assets/stars-backgrounds.jpg"); */
   /* background: url(https://images.unsplash.com/photo-1544306094-e2dcf9479da3) no-repeat; */
   background-size: cover;
   margin: 0;
