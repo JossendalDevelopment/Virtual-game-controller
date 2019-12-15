@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <div class="red_button" style @click="editing = !editing">
+  <div id="app" v-if="loaded">
+    <div class="red_button" @click="editing = !editing">
       <p>Edit</p>
     </div>
     <div
@@ -10,8 +10,8 @@
         keyMappings = [
           ...keyMappings,
           {
-            id: keyMappings.length + 1,
-            buttonName: `Button ${keyMappings.length + 1}`,
+            id: math.random(),
+            buttonName: `Unassigned`,
             key: 'Control',
             keyCode: 17,
             style: {
@@ -30,10 +30,25 @@
       v-for="(button, index) of keyMappings"
       :key="index"
       :editing="editing"
-      v-on:drag-end="event => setButtonDimensions(event, index)"
-      v-on:pressed="event => handleClick(event)"
-      :buttonData="button"
-    />
+      :button-data="button"
+      @drag-end="event => setButtonDimensions(event, index)"
+      @pressed="event => handleClick(event)"
+    >
+      <p slot="text" style="text-align: center;">{{ button.buttonName }}</p>
+      <img
+        v-if="editing"
+        slot="top-right-icon"
+        style="position: absolute; cursor: pointer; z-index: 301; top: 15px; right: 15px; height: 25px; width: 25px;"
+        src="@/assets/gear-option.svg"
+        @click="showButtonSettings(button)"
+      />
+    </Resizeable>
+      <ButtonSettingsModal
+        :showModal="showModal"
+        :data="currentButton"
+        @save="showModal = false"
+        @set-binding="event => setBindingForButton(event)"
+      />
 
     <!-- <div
       style="position: absolute;
@@ -90,20 +105,21 @@
 </template>
 
 <script>
-import axios from "axios";
 import io from "socket.io-client";
 
 import KeyboardLayout from "./keyboardLayout.json";
 
 import Resizeable from "./components/Resizeable.vue";
-import KeyboardButton from "./components/button.vue";
-import VirtualButton from "./components/VirtualButton.vue";
-import EditableButton from "./components/EditableButton.vue";
+// import KeyboardButton from "./components/button.vue";
+// import VirtualButton from "./components/VirtualButton.vue";
+// import EditableButton from "./components/EditableButton.vue";
+import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     // KeyboardButton,
+    ButtonSettingsModal,
     Resizeable
     // EditableButton
     // VirtualButton
@@ -114,7 +130,10 @@ export default {
     keysPressed: [],
     keyMappings: [],
     keyboardLayout: KeyboardLayout,
-    editing: false
+    editing: false,
+    showModal: false,
+    loaded: false,
+    currentButton: {}
   }),
   mounted() {
     this.socket = io(`http://${document.domain}:${5000}`);
@@ -133,9 +152,19 @@ export default {
       this.keysPressed = [...this.keysPressed, msg];
     });
 
-    this.keyListeners = e => {
+    this.keyListeners = (e) => {
       // TODO use to set new bindings
-      // console.log("Listener", e);
+      console.log("Listener", e);
+      console.log("BUTTON", this.currentbutton)
+      this.currentButton = {
+        ...this.currentButton,
+        key: e.key,
+        keyCode: e.keyCode
+      }
+      const replaceAt = this.keyMappings.findIndex(item => item.id === this.currentButton.id)
+      this.keyMappings[replaceAt] = this.currentButton;
+      this.$bindings.setUserKeybindings(this.keyMappings);
+      this.removeListeners();
       // const data = {
       //   key: e.key,
       //   keyCode: e.keyCode
@@ -143,16 +172,26 @@ export default {
       // this.socket.emit("keypress", e);
     };
 
-    this.addListeners();
+    // this.addListeners();
   },
   async created() {
     this.keyMappings = await this.$bindings.getUserKeybindings();
+    this.loaded = true;
   },
   destroy() {
     this.removeListeners();
   },
   methods: {
+    showButtonSettings(button) {
+      console.log("SHOW ", button)
+      this.currentButton = button;
+      this.showModal = true;
+    },
+    setBindingForButton() {
+     this.addListeners() 
+    },
     addListeners() {
+      console.log("ADD CALLED", )
       window.addEventListener("keyup", this.keyListeners);
     },
     removeListeners() {

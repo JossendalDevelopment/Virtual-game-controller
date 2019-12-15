@@ -13,13 +13,15 @@
     ref="moveable"
   >-->
   <!-- <span>BBBBBBBBIIIIIIIIIIIIFFFFFFFFFFFFFF</span> -->
-  <div draggable="true" ref="button" class="button" @click="handleClick">
+  <div ref="button"
+draggable="true" class="button"
+@click="handleClick">
     {{ data.buttonName }}
     <img
       v-if="editing"
       style="position: absolute; z-index: 301; top: 0; right: 0; height: 10px; width: 10px;"
-      @click="showButtonSettings"
       src="@/assets/gear-option.svg"
+      @click="showButtonSettings"
     />
   </div>
   <!-- </Moveable> -->
@@ -36,7 +38,7 @@ import Moveable from "@/components/Moveable.vue";
 import ButtonSettingsModal from "@/components/ButtonSettingsModal.vue";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     // Moveable
     // ButtonSettingsModal
@@ -55,19 +57,6 @@ export default {
     return {
       showModal: false
     };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      console.log("REFS", this.$refs);
-      // this.$refs.moveable.$el.style.transform = this.data.transform;
-      // this.$refs.moveable.$el.style.top = this.data.style.top + "px";
-      // this.$refs.moveable.$el.style.height = this.data.style.height + "px";
-      // this.$refs.moveable.$el.style.width = this.data.style.width + "px";
-      this.$refs.button.style.top = this.data.style.top + "px";
-      this.$refs.button.style.left = this.data.style.left + "px";
-      this.$refs.button.style.height = this.data.style.height + "px";
-      this.$refs.button.style.width = this.data.style.width + "px";
-    });
   },
   computed: {
     moveable() {
@@ -103,6 +92,19 @@ export default {
         // if (!newVal) this.$refs.button.style.transform = this.data.transform;
       });
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      console.log("REFS", this.$refs);
+      // this.$refs.moveable.$el.style.transform = this.data.transform;
+      // this.$refs.moveable.$el.style.top = this.data.style.top + "px";
+      // this.$refs.moveable.$el.style.height = this.data.style.height + "px";
+      // this.$refs.moveable.$el.style.width = this.data.style.width + "px";
+      this.$refs.button.style.top = this.data.style.top + "px";
+      this.$refs.button.style.left = this.data.style.left + "px";
+      this.$refs.button.style.height = this.data.style.height + "px";
+      this.$refs.button.style.width = this.data.style.width + "px";
+    });
   },
   methods: {
     save(data) {

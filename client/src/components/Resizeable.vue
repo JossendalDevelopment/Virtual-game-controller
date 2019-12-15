@@ -1,18 +1,19 @@
 <template>
   <div
+    :ref="`resizable${data.id}`"
     class="resizable"
-    :ref="`resizable${this.data.id}`"
     :draggable="editing"
-    @click="onPress"
     :data-item="data.id"
+    @click="onPress"
   >
+    <slot name="top-right-icon" />
     <div class="resizers">
-      <p style="text-align: center;">{{ buttonData.buttonName }}</p>
+      <slot name="text" />
       <template v-if="editing">
-        <div class="resizer top-left" :class="'resizer' + data.id"></div>
-        <div class="resizer top-right" :class="'resizer' + data.id"></div>
-        <div class="resizer bottom-left" :class="'resizer' + data.id"></div>
-        <div class="resizer bottom-right" :class="'resizer' + data.id"></div>
+        <div class="resizer top-left" :class="'resizer' + data.id" />
+        <div class="resizer top-right" :class="'resizer' + data.id" />
+        <div class="resizer bottom-left" :class="'resizer' + data.id" />
+        <div class="resizer bottom-right" :class="'resizer' + data.id" />
       </template>
     </div>
   </div>
@@ -46,9 +47,28 @@ export default {
       return this.buttonData.styles;
     }
   },
+  watch: {
+    editing: function() {
+      this.$nextTick(() => {
+        const element = this.$refs[`resizable${this.data.id}`];
+        this.makeEditable(element);
+      });
+    }
+  },
+  mounted() {
+    const element = this.$refs[`resizable${this.data.id}`];
+    element.style.width = this.buttonData.style.width + "px";
+    element.style.height = this.buttonData.style.height + "px";
+    element.style.top = this.buttonData.style.top + "px";
+    element.style.left = this.buttonData.style.left + "px";
+    if (this.editing) {
+      this.makeEditable(element);
+    }
+  },
   methods: {
     onPress() {
-      !this.editing && this.$emit("pressed", this.data);
+      console.log("ONPRESS", this.data)
+      if (!this.editing) this.$emit("pressed", this.buttonData);
     },
     handleDragStart(event, element) {
       element.style.opacity = "0.8";
@@ -64,20 +84,13 @@ export default {
             event.target.getAttribute("data-item"))
       );
     },
-    handleDragOver(event, element) {
-      if (event.preventDefault) {
-        event.preventDefault(); // Necessary. Allows us to drop.
-      }
-      event.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
-      return false;
-    },
-    handleDragEnter(event, element) {
-      // this / e.target is the current hover target.
-      //   element.classList.add("over");
-    },
-    handleDragLeave(event, element) {
-      //   element.classList.remove("over"); // this / e.target is previous target element.
-    },
+    // handleDragOver(event, element) {
+    //   if (event.preventDefault) {
+    //     event.preventDefault(); // Necessary. Allows us to drop.
+    //   }
+    //   event.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
+    //   return false;
+    // },
     handleDrop(event, element) {
       const elements = document.querySelectorAll(".resizable");
       const offset = event.dataTransfer.getData("text/plain").split(",");
@@ -85,8 +98,8 @@ export default {
         event.clientX + parseInt(offset[0], 10) + "px";
       elements[parseInt(offset[2])].style.top =
         event.clientY + parseInt(offset[1], 10) + "px";
-      //   element.style.left = event.clientX + parseInt(offset[0], 10) + "px";
-      //   element.style.top = event.clientY + parseInt(offset[1], 10) + "px";
+      // element.style.left = event.clientX + parseInt(offset[0], 10) + "px";
+      // element.style.top = event.clientY + parseInt(offset[1], 10) + "px";
 
       this.data = {
         ...this.data,
@@ -105,7 +118,7 @@ export default {
       element.classList.remove("over");
     },
     makeEditable(element) {
-      const resizers = document.querySelectorAll(`.resizer`);
+      const resizers = document.querySelectorAll(`.resizer${this.data.id}`);
       let minimum_size = 20;
       let original_width = 0;
       let original_height = 0;
@@ -117,21 +130,6 @@ export default {
       element.addEventListener(
         "dragstart",
         event => this.handleDragStart(event, element),
-        false
-      );
-      element.addEventListener(
-        "dragenter",
-        event => this.handleDragEnter(event, element),
-        false
-      );
-      document.body.addEventListener(
-        "dragover",
-        event => this.handleDragOver(event, element),
-        false
-      );
-      element.addEventListener(
-        "dragleave",
-        event => this.handleDragLeave(event, element),
         false
       );
       document.body.addEventListener(
@@ -225,25 +223,6 @@ export default {
           window.removeEventListener("mousemove", resize);
         };
       }
-    }
-  },
-  watch: {
-    editing: function(newVal, oldVal) {
-      this.$nextTick(() => {
-        const element = this.$refs[`resizable${this.data.id}`];
-        this.makeEditable(element);
-      });
-    }
-  },
-  mounted() {
-    // const element = this.$refs.resizable;
-    const element = this.$refs[`resizable${this.data.id}`];
-    element.style.width = this.buttonData.style.width + "px";
-    element.style.height = this.buttonData.style.height + "px";
-    element.style.top = this.buttonData.style.top + "px";
-    element.style.left = this.buttonData.style.left + "px";
-    if (this.editing) {
-      this.makeEditable(element);
     }
   }
 };

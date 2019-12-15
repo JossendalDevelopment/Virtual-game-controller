@@ -18,14 +18,16 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
-    "@vue/cli-plugin-eslint": "^4.1.0",
+    "@vue/cli-plugin-eslint": "^4.1.1",
     "@vue/cli-plugin-vuex": "^4.1.1",
     "@vue/cli-service": "^4.1.0",
+    "@vue/eslint-config-prettier": "^5.0.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^5.16.0",
-    "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
+    "lint-staged": "^9.4.3",
+    "prettier": "^1.19.1",
     "vue-svg-loader": "^0.15.0",
     "vue-template-compiler": "^2.6.10"
   },
@@ -36,11 +38,22 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "plugin:prettier/recommended",
-      "plugin:vue/base"
+      "@vue/prettier"
     ],
     "rules": {
-      "no-console": "off"
+      "endOfLine": "auto",
+      "vue/attribute-hyphenation": "off",
+      "vue/max-attributes-per-line": [
+        2,
+        {
+          "singleline": 2,
+          "multiline": {
+            "max": 1,
+            "allowFirstLine": true
+          }
+        }
+      ],
+      "vue/singleline-html-element-content-newline": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"
@@ -49,5 +62,14 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
 }

@@ -1,30 +1,22 @@
 <template>
-  <Moveable class="moveable" v-bind="moveable" @drag="handleDrag">
-    <div class="modal_container" v-if="showModal">
-      <div style="position: relative;">
-        <p
-          class="drag_handle"
-          @mousedown="toggleDraggable"
-          @mouseup="toggleDraggable"
-        >
-          drag
-        </p>
-        <p>Settings</p>
-        <input v-model="buttonData.buttonName" />
-        <p>Bound to key: {{ buttonData.key }}</p>
-      </div>
-      <Cog />
-      <button @click="$emit('save', buttonData)">save</button>
+  <Moveable v-if="showModal" class="moveable" v-bind="moveable" @drag="handleDrag">
+  <div class="modal_container">
+    <div style="position: relative;">
+      <p class="drag_handle" @mousedown="toggleDraggable" @mouseup="toggleDraggable">drag</p>
+      <p>Settings</p>
+      <input v-model="buttonData.buttonName" />
+      <p>Bound to key: {{ data.key }}</p>
+      <button @click="$emit('set-binding', buttonData)">change</button>
     </div>
+    <button @click="$emit('save', buttonData)">save</button>
+  </div>
   </Moveable>
 </template>
 <script>
-import Cog from "../../public/gear-option.svg";
 import Moveable from "@/components/Moveable.vue";
 
 export default {
   components: {
-    Cog,
     Moveable
   },
   props: {
@@ -58,7 +50,7 @@ export default {
   },
   computed: {},
   methods: {
-    handleDrag({ target, transform, left, top }) {
+    handleDrag({ target, transform }) {
       console.log("onDrag left, top", transform);
       target.style.transform = transform;
     },
@@ -80,7 +72,7 @@ export default {
   width: 250px;
   height: 150px;
   background-color: lightgrey;
-  z-index: 101;
+  z-index: 401;
 }
 .drag_handle {
   position: absolute;

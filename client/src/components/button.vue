@@ -1,5 +1,7 @@
 <template>
-  <button label="Button" @click="handleClick">{{ data }}</button>
+  <button label="Button" @click="handleClick">
+    {{ data }}
+  </button>
 </template>
 <script>
 export default {

@@ -151,11 +151,6 @@ export default {
     scrollThreshold: Number,
     getScrollPosition: Function
   },
-  methods: {
-    updateRec() {
-      this.moveable.updateRect();
-    }
-  },
   mounted() {
     this.moveable = new Moveable(this.$props.container, {
       ...this.$props,
@@ -165,6 +160,11 @@ export default {
       this.moveable.on(event, this.$emit.bind(this, event))
     );
     window.addEventListener("resize", this.updateRec, { passive: true });
+  },
+  methods: {
+    updateRec() {
+      this.moveable.updateRect();
+    }
   },
   watch: {
     ...watchMoveableProps()

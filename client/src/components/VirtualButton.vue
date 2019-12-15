@@ -1,5 +1,7 @@
 <template>
-  <div ref="button" class="button" :style="data.style" @click="handleClick">
+  <div ref="button"
+class="button" :style="data.style"
+@click="handleClick">
     {{ data.buttonName }}
   </div>
   <!-- </div> -->
@@ -15,7 +17,7 @@
 import ButtonSettingsModal from "@/components/ButtonSettingsModal.vue";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     // ButtonSettingsModal
   },
@@ -33,16 +35,6 @@ export default {
     return {
       showModal: false
     };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      console.log("REFS", this.$refs, this.data);
-      // if (this.editing) this.$refs.moveable.$el.style = this.setStyles;
-      // this.$refs.moveable.$el.style.transform = this.data.transform;
-      this.$refs.button.style.top = this.data.style.top + "px";
-      this.$refs.button.style.height = this.data.style.height + "px";
-      this.$refs.button.style.width = this.data.style.width + "px";
-    });
   },
   computed: {
     setStyles() {
@@ -62,6 +54,16 @@ export default {
         // if (!newVal) this.$refs.button.style.transform = this.data.transform;
       });
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      console.log("REFS", this.$refs, this.data);
+      // if (this.editing) this.$refs.moveable.$el.style = this.setStyles;
+      // this.$refs.moveable.$el.style.transform = this.data.transform;
+      this.$refs.button.style.top = this.data.style.top + "px";
+      this.$refs.button.style.height = this.data.style.height + "px";
+      this.$refs.button.style.width = this.data.style.width + "px";
+    });
   },
   methods: {
     save(data) {
