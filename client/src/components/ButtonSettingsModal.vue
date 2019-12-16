@@ -1,15 +1,29 @@
 <template>
   <Moveable v-if="showModal" class="moveable" v-bind="moveable" @drag="handleDrag">
-  <div class="modal_container">
-    <div style="position: relative;">
-      <p class="drag_handle" @mousedown="toggleDraggable" @mouseup="toggleDraggable">drag</p>
-      <p>Settings</p>
-      <input v-model="buttonData.buttonName" />
-      <p>Bound to key: {{ data.key }}</p>
-      <button @click="$emit('set-binding', buttonData)">change</button>
+    <div class="modal_container">
+      <div style="position: relative;">
+        <p>Settings</p>
+        <img
+          class="drag_handle"
+          @mousedown="toggleDraggable"
+          @mouseup="toggleDraggable"
+          src="@/assets/move.svg"
+        />
+        <div>
+          <span>Name:</span>
+          <input v-model="data.buttonName" />
+        </div>
+        <div>
+          <span>Color:</span>
+          <input v-model="buttonData.style.background" />
+        </div>
+        <span>Bound to key: {{ data.key }}</span>
+      </div>
+      <div>
+        <button @click="$emit('set-binding', buttonData)">change</button>
+        <button @click="$emit('save', buttonData)">save</button>
+      </div>
     </div>
-    <button @click="$emit('save', buttonData)">save</button>
-  </div>
   </Moveable>
 </template>
 <script>
@@ -44,11 +58,18 @@ export default {
         pinchable: false, // ["draggable", "resizable", "scalable", "rotatable"]
         origin: false
       },
-      buttonData: this.data,
+      // buttonData: this.data,
       isDraggable: false
     };
   },
-  computed: {},
+  mounted() {
+    console.log("MOUNT", this.data);
+  },
+  computed: {
+    buttonData() {
+      return this.data;
+    }
+  },
   methods: {
     handleDrag({ target, transform }) {
       console.log("onDrag left, top", transform);
@@ -69,14 +90,18 @@ export default {
   position: absolute;
   top: 30px;
   left: 30px;
-  width: 250px;
-  height: 150px;
+  /* width: 250px; */
+  /* height: 150px; */
   background-color: lightgrey;
   z-index: 401;
+  padding: 8px;
 }
 .drag_handle {
   position: absolute;
-  top: 10px;
+  top: 0;
   right: 10px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
 }
 </style>

@@ -10,7 +10,7 @@ flask-socketio = "*"
 flask = "*"
 flask-cors = "*"
 keyboard = "*"
-secrets = "*"
+eventlet = "*"
 
 [requires]
 python_version = "3.8"

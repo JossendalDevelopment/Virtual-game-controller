@@ -6,30 +6,32 @@
       "key": "a",
       "keyCode": 65,
       "style": {
-        "bottom": 192.0749969482422,
-        "height": 182.0749969482422,
-        "left": 484,
-        "right": 675.0749969482422,
-        "top": 10,
-        "width": 191.0749969482422,
-        "x": 484,
-        "y": 10
+        "background": "red",
+        "bottom": 105,
+        "height": 91,
+        "left": 66,
+        "right": 164,
+        "top": 14,
+        "width": 98,
+        "x": 66,
+        "y": 14
       }
     },
     {
-      "buttonName": "Esc",
+      "buttonName": "Escape",
       "id": 1,
       "key": "Escape",
       "keyCode": "Escape",
       "style": {
-        "bottom": 108,
+        "background": "green",
+        "bottom": 207,
         "height": 91,
-        "left": 67,
-        "right": 165,
-        "top": 17,
+        "left": 530,
+        "right": 628,
+        "top": 116,
         "width": 98,
-        "x": 67,
-        "y": 17
+        "x": 530,
+        "y": 116
       }
     }
   ]

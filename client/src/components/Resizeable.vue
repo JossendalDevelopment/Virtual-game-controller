@@ -67,12 +67,11 @@ export default {
   },
   methods: {
     onPress() {
-      console.log("ONPRESS", this.data)
       if (!this.editing) this.$emit("pressed", this.buttonData);
     },
     handleDragStart(event, element) {
       element.style.opacity = "0.8";
-      var style = window.getComputedStyle(event.target, null);
+      const style = window.getComputedStyle(event.target, null);
       event.dataTransfer.setData(
         "text/plain",
         parseInt(style.getPropertyValue("left"), 10) -
@@ -84,13 +83,13 @@ export default {
             event.target.getAttribute("data-item"))
       );
     },
-    // handleDragOver(event, element) {
-    //   if (event.preventDefault) {
-    //     event.preventDefault(); // Necessary. Allows us to drop.
-    //   }
-    //   event.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
-    //   return false;
-    // },
+    handleDragOver(event) {
+      if (event.preventDefault) {
+        event.preventDefault(); // Necessary. Allows us to drop.
+      }
+      // event.dataTransfer.dropEffect = "move"; // See the section on the DataTransfer object.
+      return false;
+    },
     handleDrop(event, element) {
       const elements = document.querySelectorAll(".resizable");
       const offset = event.dataTransfer.getData("text/plain").split(",");
@@ -100,16 +99,19 @@ export default {
         event.clientY + parseInt(offset[1], 10) + "px";
       // element.style.left = event.clientX + parseInt(offset[0], 10) + "px";
       // element.style.top = event.clientY + parseInt(offset[1], 10) + "px";
+      if (event.stopPropagation) {
+        event.stopPropagation();
+      }
 
       this.data = {
         ...this.data,
-        style: element.getBoundingClientRect()
+        style: {
+          ...this.data.style,
+          ...element.getBoundingClientRect()
+        }
       };
       this.$emit("drag-end", this.data);
 
-      if (event.stopPropagation) {
-        event.stopPropagation(); // stops the browser from redirecting.
-      }
       return false;
     },
 
@@ -140,6 +142,11 @@ export default {
       element.addEventListener(
         "dragend",
         event => this.handleDragEnd(event, element),
+        false
+      );
+      document.body.addEventListener(
+        "dragover",
+        event => this.handleDragOver(event, element),
         false
       );
 
@@ -214,10 +221,12 @@ export default {
         };
 
         const stopResize = () => {
-          console.log("1", this.data);
           this.data = {
             ...this.data,
-            style: element.getBoundingClientRect()
+            style: {
+              ...this.data.style,
+              ...element.getBoundingClientRect()
+            }
           };
           this.$emit("drag-end", this.data);
           window.removeEventListener("mousemove", resize);
@@ -232,7 +241,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
   position: absolute;
 }
 
@@ -246,14 +254,13 @@ export default {
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: 3px solid #bada55;
   box-sizing: border-box;
 }
 
 .resizable .resizers .resizer {
   width: 10px;
   height: 10px;
-  border-radius: 50%; /*magic to turn square into circle*/
+  border-radius: 50%;
   background: white;
   border: 3px solid #4286f4;
   position: absolute;

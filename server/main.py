@@ -4,6 +4,8 @@ import secrets
 import json
 import keyboard
 import time
+import eventlet
+eventlet.monkey_patch()
 
 from flask import Flask, request, jsonify, url_for, Response
 from flask_cors import CORS
@@ -23,7 +25,7 @@ app.config['SECRET_KEY'] = "".join(
 #                  b"\xc2\x9d\xc3\xb5\xc2\x86L^0}\x12,\\\x01\xc2\xa8P\xc3\xb2" \
 #                  b"\xc2\xber@\xc3\xaf\x02(\xc2\xa8\t"
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 
 def message_received(methods=['GET', 'POST']):
@@ -73,6 +75,5 @@ def handle_keypress(json_data, methods=['GET', 'POST']):
 
 
 if __name__ == "__main__":
-    # run_server()
-    app.run()
-    socketio.run(app, debug=False, host='0.0.0.0', port=8765)
+    # app.run()
+    socketio.run(app, debug=True, port=5000)

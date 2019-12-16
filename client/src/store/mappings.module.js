@@ -35,18 +35,20 @@ export const mappings = {
         commit("setUserBindings", bindings);
         return bindings;
       } catch (error) {
-        console.log("ERR", error);
+        console.log("Error in 'getKeyBindings action", error);
       }
     },
     async setKeyBindings({ commit }, payload) {
-      console.log("NEW BINDING", payload.bindings);
-      const response = await axios.post(
-        "http://localhost:5000/set_key_mapping",
-        payload.bindings
-      );
-      console.log("F RESPONSE", response);
-      commit("setUserBindings", payload);
-      return payload;
+      try {
+        await axios.post(
+          "http://localhost:5000/set_key_mapping",
+          payload.bindings
+        );
+        commit("setUserBindings", payload);
+        return payload;
+      } catch (error) {
+        console.log("Error in 'setKeyBindings action", error);
+      }
     },
     startLoading({ commit }) {
       commit("startLoading");
