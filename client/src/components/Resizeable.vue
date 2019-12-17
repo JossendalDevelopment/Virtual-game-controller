@@ -5,7 +5,6 @@
     :draggable="editing"
     :data-item="buttonIndex"
     @click="onPress"
-    @touchend="onPress"
   >
     <slot name="top-right-icon" />
     <div class="resizers">
@@ -81,6 +80,7 @@ export default {
   },
   methods: {
     onPress() {
+      console.log("BAKIT");
       if (!this.editing) this.$emit("pressed", this.buttonData);
     },
     handleDragStart(event, element) {

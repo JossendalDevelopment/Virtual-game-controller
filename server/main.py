@@ -1,3 +1,4 @@
+from network_setup import Window
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask import Flask, request, jsonify, url_for, Response
@@ -9,6 +10,10 @@ import keyboard
 import time
 import eventlet
 eventlet.monkey_patch()
+
+ip = Window.get_users_ip()
+if ip == "":
+    ip = "0.0.0.0"
 
 
 # Create the Flask app
@@ -81,4 +86,5 @@ def handle_keypress(json_data, methods=['GET', 'POST']):
 
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, port=5000)
+    print("START SERVER WITH IP", ip)
+    socketio.run(app, debug=False, port=5000, host=ip)

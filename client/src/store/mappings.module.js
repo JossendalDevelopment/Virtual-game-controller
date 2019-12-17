@@ -57,7 +57,7 @@ export const mappings = {
     async getKeyBindings({ commit }) {
       try {
         const jsonData = await axios.get(
-          "http://localhost:5000/get_key_mapping"
+          `http://${process.env.VUE_APP_API_HOST}:5000/get_key_mapping`
         );
         const bindings = jsonData.data.keyMappings;
         commit("setUserBindings", bindings);

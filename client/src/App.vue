@@ -82,7 +82,7 @@ export default {
     currentButton: {}
   }),
   mounted() {
-    this.socket = io(`http://${document.domain}:${5000}`);
+    this.socket = io(`http://192.168.50.148:${5000}`);
 
     this.socket.on("connection", () => {
       console.log("Connection established");
