@@ -1,3 +1,6 @@
+from flask_socketio import SocketIO
+from flask_cors import CORS
+from flask import Flask, request, jsonify, url_for, Response
 import asyncio
 import ssl
 import secrets
@@ -7,9 +10,6 @@ import time
 import eventlet
 eventlet.monkey_patch()
 
-from flask import Flask, request, jsonify, url_for, Response
-from flask_cors import CORS
-from flask_socketio import SocketIO
 
 # Create the Flask app
 app = Flask(__name__)
@@ -70,10 +70,15 @@ def handle_json(json):
 def handle_keypress(json_data, methods=['GET', 'POST']):
     print('received keypress: ', json_data)
     time.sleep(3)
-    keyboard.press_and_release(json_data['key'])
-    socketio.emit('keypress-response', json_data, callback=message_received)
+    try:
+        keyboard.press_and_release(json_data['key'])
+        socketio.emit('keypress-response', json_data,
+                      callback=message_received)
+    except ValueError:
+        print("ERROR FOUND")
+        error_response = {"status": 500, "msg": "Unrecognized key value"}
+        socketio.emit('keypress-response', error_response)
 
 
 if __name__ == "__main__":
-    # app.run()
     socketio.run(app, debug=True, port=5000)

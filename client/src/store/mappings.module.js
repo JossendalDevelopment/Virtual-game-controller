@@ -18,6 +18,34 @@ export const mappings = {
     getUserBindings(state) {
       return state.userBindings;
     },
+    updateBinding(state, payload) {
+      console.log("USER BINDINGS", state.userBindings);
+      const index = state.userBindings.findIndex(
+        b => b.id === payload.newBinding.id
+      );
+      state.userBindings[index] = payload.newBinding;
+      console.log("UPDATED", state.userBindings);
+    },
+    addBinding(state) {
+      state.userBindings = [
+        ...state.userBindings,
+        {
+          buttonName: "W",
+          id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
+          key: "w",
+          keyCode: 87,
+          position: {
+            width: 150,
+            height: 100,
+            top: 100,
+            left: 100
+          },
+          style: {
+            background: "#e2e2e2"
+          }
+        }
+      ];
+    },
     startLoading(state) {
       state.loading = true;
     },
@@ -44,11 +72,17 @@ export const mappings = {
           "http://localhost:5000/set_key_mapping",
           payload.bindings
         );
-        commit("setUserBindings", payload);
+        commit("setUserBindings", payload.bindings);
         return payload;
       } catch (error) {
         console.log("Error in 'setKeyBindings action", error);
       }
+    },
+    update({ commit }, payload) {
+      commit("updateBinding", payload);
+    },
+    addBinding({ commit }) {
+      commit("addBinding");
     },
     startLoading({ commit }) {
       commit("startLoading");

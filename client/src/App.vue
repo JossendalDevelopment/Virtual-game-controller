@@ -3,82 +3,35 @@
     <div class="red_button" @click="editing = !editing">
       <p>Edit</p>
     </div>
-    <div
-      class="red_button"
-      style="top: 85px;"
-      @click="
-        keyMappings = [
-          ...keyMappings,
-          {
-            id: math.random(),
-            buttonName: 'Control',
-            key: 'Control',
-            keyCode: 17,
-            style: {
-              top: 50,
-              left: 50,
-              height: 100.0,
-              width: 200.0,
-              background: '#bada55'
-            }
-          }
-        ]
-      "
-    >
+    <div v-if="editing" class="red_button" style="top: 85px;" @click="addBinding()">
       <p>Add</p>
     </div>
     <Resizeable
       v-for="(button, index) of keyMappings"
       :key="index"
       :editing="editing"
-      :button-data="button"
+      :buttonData="button"
+      :buttonIndex="index"
       @drag-end="event => setButtonDimensions(event, index)"
       @pressed="event => handleClick(event)"
     >
-      <keyboardButton
-        slot="text"
+      <VirtualButton
+        slot="content"
         :data="button"
         :editing="editing"
         @show-settings="button => showButtonSettings(button)"
       />
     </Resizeable>
-    <ButtonSettingsModal
-      :showModal="showModal"
-      :data="currentButton"
-      @save="event => saveSettings(event)"
-      @set-binding="event => setBindingForButton(event)"
-    />
-
-    <!-- <div
-      style="position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;"
-    >-->
-    <!-- <template v-if="editing"> -->
-    <!-- <EditableButton
-      v-for="(item, index) of keyMappings"
-      :key="index + 'vb'"
-      v-on:drag-end="event => setButtonDimensions(event, index)"
-      v-on:scale-end="event => setButtonDimensions(event, index)"
-      v-on:pressed="event => handleClick(event)"
-      :data="item"
-      :editing="editing"
-    />-->
-    <!-- </template>
-      <template v-else>
-        <VirtualButton
-          v-for="(item, index) of keyMappings"
-          :key="index + 'vb'"
-          v-on:pressed="event => handleClick(event)"
-          :data="item"
-          :editing="editing"
-    />-->
-    <!-- </template> -->
-    <!-- </div> -->
+    <Resizeable v-if="showModal" :buttonIndex="this.keyMappings.length" :editing="editing">
+      <ButtonSettingsModal
+        slot="content"
+        :showModal="showModal"
+        :data="currentButton"
+        @set-binding="button => setBindingForButton(button)"
+        @close="() => this.showModal = false"
+        @delete="button => deleteButton(button)"
+      />
+    </Resizeable>
 
     <!-- <div
       v-if="editing"
@@ -109,25 +62,19 @@ import io from "socket.io-client";
 import KeyboardLayout from "./keyboardLayout.json";
 
 import Resizeable from "./components/Resizeable.vue";
-import KeyboardButton from "./components/button.vue";
-// import VirtualButton from "./components/VirtualButton.vue";
-// import EditableButton from "./components/EditableButton.vue";
+import VirtualButton from "./components/VirtualButton.vue";
 import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
 
 export default {
   name: "App",
   components: {
-    KeyboardButton,
+    VirtualButton,
     ButtonSettingsModal,
     Resizeable
-    // EditableButton
-    // VirtualButton
   },
   data: () => ({
     socket: null,
     keyListeners: null,
-    keysPressed: [],
-    keyMappings: [],
     keyboardLayout: KeyboardLayout,
     editing: false,
     showModal: false,
@@ -146,9 +93,11 @@ export default {
 
     this.socket.on("error", error => console.log("Connection error:", error));
 
-    this.socket.on("keypress-response", msg => {
-      console.log("keypress repsonse received", msg);
-      this.keysPressed = [...this.keysPressed, msg];
+    this.socket.on("keypress-response", response => {
+      console.log("keypress repsonse received", response);
+      if (response.status === 500) {
+        // TODO show an error popup
+      }
     });
 
     this.keyListeners = e => {
@@ -157,23 +106,28 @@ export default {
         key: e.key,
         keyCode: e.keyCode
       };
-      const replaceAt = this.keyMappings.findIndex(
-        item => item.id === this.currentButton.id
-      );
-      this.keyMappings[replaceAt] = this.currentButton;
-      this.$bindings.setUserKeybindings(this.keyMappings);
+      this.$bindings.update(this.currentButton);
       this.removeListeners();
       // this.socket.emit("keypress", e);
     };
   },
   async created() {
-    this.keyMappings = await this.$bindings.getUserKeybindings();
+    await this.$bindings.getUserKeybindings();
     this.loaded = true;
   },
   destroy() {
     this.removeListeners();
   },
+  computed: {
+    keyMappings() {
+      return this.$bindings.userBindings;
+    }
+  },
   methods: {
+    addBinding() {
+      this.$bindings.addBinding();
+      this.editing = true;
+    },
     showButtonSettings(button) {
       this.currentButton = button;
       this.showModal = true;
@@ -188,22 +142,20 @@ export default {
       window.removeEventListener("keyup", this.keyListeners);
     },
     handleClick(e) {
+      // TODO design this to handle a down and up keypress
       this.socket.emit("keypress", e);
     },
+    deleteButton(button) {
+      const index = this.keyMappings.findIndex(item => item.id == button.id);
+      this.keyMappings = this.keyMappings.splice(index, 1);
+
+      this.$bindings.setUserKeybindings(this.keyMappings);
+      this.showModal = false;
+    },
     setButtonDimensions(event, index) {
-      console.log("SETTING", event);
       this.keyMappings[index] = event;
 
       this.$bindings.setUserKeybindings(this.keyMappings);
-    },
-    saveSettings(event) {
-      console.log("SAVEING", event);
-      const replaceAt = this.keyMappings.findIndex(
-        item => item.id === event.id
-      );
-      this.keyMappings[replaceAt] = event;
-      this.$bindings.setUserKeybindings(this.keyMappings);
-      this.showModal = false;
     }
   }
 };

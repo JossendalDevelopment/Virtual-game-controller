@@ -1,14 +1,15 @@
 <template>
   <div
-    :ref="`resizable${data.id}`"
+    :ref="`resizable${buttonIndex}`"
     class="resizable"
     :draggable="editing"
-    :data-item="data.id"
+    :data-item="buttonIndex"
     @click="onPress"
+    @touchend="onPress"
   >
     <slot name="top-right-icon" />
     <div class="resizers">
-      <slot name="text" />
+      <slot name="content" />
       <template v-if="editing">
         <div class="resizer top-left" :class="'resizer' + data.id" />
         <div class="resizer top-right" :class="'resizer' + data.id" />
@@ -23,6 +24,24 @@ export default {
   props: {
     buttonData: {
       type: Object,
+      required: false,
+      default() {
+        return {
+          buttonName: "Settings",
+          position: {
+            width: "auto",
+            height: "auto",
+            top: 100,
+            left: 100
+          },
+          style: {
+            background: "#e2e2e2"
+          }
+        };
+      }
+    },
+    buttonIndex: {
+      type: Number,
       required: true
     },
     editing: {
@@ -32,13 +51,6 @@ export default {
   },
   data() {
     return {
-      original_width: 0,
-      original_height: 0,
-      original_x: 0,
-      original_y: 0,
-      original_mouse_x: 0,
-      original_mouse_y: 0,
-      minimum_size: 20,
       data: this.buttonData
     };
   },
@@ -50,19 +62,21 @@ export default {
   watch: {
     editing: function() {
       this.$nextTick(() => {
-        const element = this.$refs[`resizable${this.data.id}`];
+        const element = this.$refs[`resizable${this.buttonIndex}`];
         this.makeEditable(element);
       });
     }
   },
   mounted() {
-    const element = this.$refs[`resizable${this.data.id}`];
-    element.style.width = this.buttonData.style.width + "px";
-    element.style.height = this.buttonData.style.height + "px";
-    element.style.top = this.buttonData.style.top + "px";
-    element.style.left = this.buttonData.style.left + "px";
-    if (this.editing) {
-      this.makeEditable(element);
+    const element = this.$refs[`resizable${this.buttonIndex}`];
+    if (this.buttonData.position) {
+      element.style.width = this.buttonData.position.width + "px";
+      element.style.height = this.buttonData.position.height + "px";
+      element.style.top = this.buttonData.position.top + "px";
+      element.style.left = this.buttonData.position.left + "px";
+      if (this.editing) {
+        this.makeEditable(element);
+      }
     }
   },
   methods: {
@@ -93,6 +107,7 @@ export default {
     handleDrop(event, element) {
       const elements = document.querySelectorAll(".resizable");
       const offset = event.dataTransfer.getData("text/plain").split(",");
+      console.log("ELS", elements.length, "OFFSET", offset);
       elements[parseInt(offset[2])].style.left =
         event.clientX + parseInt(offset[0], 10) + "px";
       elements[parseInt(offset[2])].style.top =
@@ -103,12 +118,10 @@ export default {
         event.stopPropagation();
       }
 
+      // TODO do not emit this event for drop event of settings modal
       this.data = {
         ...this.data,
-        style: {
-          ...this.data.style,
-          ...element.getBoundingClientRect()
-        }
+        position: element.getBoundingClientRect()
       };
       this.$emit("drag-end", this.data);
 
@@ -121,7 +134,7 @@ export default {
     },
     makeEditable(element) {
       const resizers = document.querySelectorAll(`.resizer${this.data.id}`);
-      let minimum_size = 20;
+      let minimum_size = 40;
       let original_width = 0;
       let original_height = 0;
       let original_x = 0;
@@ -223,10 +236,7 @@ export default {
         const stopResize = () => {
           this.data = {
             ...this.data,
-            style: {
-              ...this.data.style,
-              ...element.getBoundingClientRect()
-            }
+            position: element.getBoundingClientRect()
           };
           this.$emit("drag-end", this.data);
           window.removeEventListener("mousemove", resize);
@@ -245,7 +255,7 @@ export default {
 }
 
 .resizable:active {
-  background: rgb(151, 151, 151);
+  opacity: 0.8;
 }
 
 .resizable .resizers {
@@ -264,7 +274,7 @@ export default {
   background: white;
   border: 3px solid #4286f4;
   position: absolute;
-  z-index: 401;
+  z-index: 201;
 }
 
 .resizable .resizers .resizer.top-left {

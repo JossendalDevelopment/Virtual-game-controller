@@ -1,38 +1,52 @@
 <template>
-  <Moveable v-if="showModal" class="moveable" v-bind="moveable" @drag="handleDrag">
-    <div class="modal_container">
-      <div style="position: relative;">
-        <p>Settings</p>
-        <img
-          class="drag_handle"
-          @mousedown="toggleDraggable"
-          @mouseup="toggleDraggable"
-          src="@/assets/move.svg"
+  <div class="modal_container" v-if="showModal">
+    <div style="position: relative;">
+      <p>Settings</p>
+      <img draggable="false" class="drag_handle" src="@/assets/move.svg" />
+      <div class="input_wrapper">
+        <span>Name:</span>
+        <input v-model="buttonData.buttonName" />
+      </div>
+      <div class="input_wrapper">
+        <span>Background:</span>
+        <input type="color" v-model="buttonData.style.background" />
+      </div>
+      <div class="input_wrapper">
+        <span>Opacity:</span>
+        <input
+          style="width: 75px;"
+          type="number"
+          step="0.1"
+          max="1"
+          v-model="buttonData.style.opacity"
         />
-        <div>
-          <span>Name:</span>
-          <input v-model="data.buttonName" />
-        </div>
-        <div>
-          <span>Color:</span>
-          <input v-model="buttonData.style.background" />
-        </div>
-        <span>Bound to key: {{ data.key }}</span>
       </div>
-      <div>
-        <button @click="$emit('set-binding', buttonData)">change</button>
-        <button @click="$emit('save', buttonData)">save</button>
+      <div class="input_wrapper">
+        <span>Text:</span>
+        <input type="color" v-model="buttonData.style.color" />
       </div>
+      <div class="input_wrapper">
+        <span>Size:</span>
+        <input
+          style="width: 75px;"
+          type="number"
+          step="1"
+          max="32"
+          v-model="buttonData.style.fontSize"
+        />
+      </div>
+      <span>Bound to key: {{ buttonData.key }}</span>
     </div>
-  </Moveable>
+    <div style="padding: 4px 0;">
+      <button @click="$emit('set-binding', buttonData)">bind</button>
+      <button @click="save()">save</button>
+      <button @click="$emit('close')">close</button>
+      <button @click="$emit('delete', buttonData)">delete</button>
+    </div>
+  </div>
 </template>
 <script>
-import Moveable from "@/components/Moveable.vue";
-
 export default {
-  components: {
-    Moveable
-  },
   props: {
     showModal: {
       type: Boolean,
@@ -40,58 +54,45 @@ export default {
     },
     data: {
       type: Object,
-      required: true
+      required: false,
+      default() {
+        return {
+          style: {
+            background: "#e2e2e2"
+          },
+          position: {
+            bottom: 381.4000015258789,
+            height: "auto",
+            left: 272,
+            right: 359.375,
+            top: 330,
+            width: "auto"
+          }
+        };
+      }
     }
   },
-  data() {
-    return {
-      moveable: {
-        draggable: false,
-        throttleDrag: 1,
-        resizable: false,
-        throttleResize: 1,
-        keepRatio: true,
-        scalable: false,
-        throttleScale: 0.01,
-        rotatable: false,
-        throttleRotate: 0.2,
-        pinchable: false, // ["draggable", "resizable", "scalable", "rotatable"]
-        origin: false
-      },
-      // buttonData: this.data,
-      isDraggable: false
-    };
-  },
-  mounted() {
-    console.log("MOUNT", this.data);
-  },
   computed: {
-    buttonData() {
-      return this.data;
+    buttonData: {
+      get: function() {
+        return this.data;
+      },
+      set: function(newValue) {
+        console.log("SETTER", newValue);
+      }
     }
   },
   methods: {
-    handleDrag({ target, transform }) {
-      console.log("onDrag left, top", transform);
-      target.style.transform = transform;
-    },
-    toggleDraggable() {
-      this.isDraggable = !this.isDraggable;
-      this.moveable = {
-        ...this.moveable,
-        draggable: this.isDraggable
-      };
+    save() {
+      this.$bindings.setUserKeybindings(this.$bindings.userBindings);
+      this.$emit("close");
     }
   }
 };
 </script>
 <style>
 .modal_container {
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  /* width: 250px; */
-  /* height: 150px; */
+  position: relative;
   background-color: lightgrey;
   z-index: 401;
   padding: 8px;
@@ -102,6 +103,12 @@ export default {
   right: 10px;
   height: 20px;
   width: 20px;
-  cursor: pointer;
+  /* cursor: pointer; */
+}
+.input_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
 }
 </style>

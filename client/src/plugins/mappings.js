@@ -14,6 +14,14 @@ export default {
               bindings
             });
           };
+          bindings.update = newBinding => {
+            return store.dispatch("mappings/update", {
+              newBinding
+            });
+          };
+          bindings.addBinding = () => {
+            return store.dispatch("mappings/addBinding");
+          };
           return bindings;
         }
       }
