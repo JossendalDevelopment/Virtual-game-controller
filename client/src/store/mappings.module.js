@@ -19,7 +19,6 @@ export const mappings = {
       return state.userBindings;
     },
     updateBinding(state, payload) {
-      console.log("USER BINDINGS", state.userBindings);
       const index = state.userBindings.findIndex(
         b => b.id === payload.newBinding.id
       );
@@ -69,7 +68,7 @@ export const mappings = {
     async setKeyBindings({ commit }, payload) {
       try {
         await axios.post(
-          "http://localhost:5000/set_key_mapping",
+          `http://${process.env.VUE_APP_API_HOST}:5000/set_key_mapping`,
           payload.bindings
         );
         commit("setUserBindings", payload.bindings);

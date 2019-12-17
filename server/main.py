@@ -87,4 +87,4 @@ def handle_keypress(json_data, methods=['GET', 'POST']):
 
 if __name__ == "__main__":
     print("START SERVER WITH IP", ip)
-    socketio.run(app, debug=False, port=5000, host=ip)
+    socketio.run(app, debug=True, port=5000, host=ip)

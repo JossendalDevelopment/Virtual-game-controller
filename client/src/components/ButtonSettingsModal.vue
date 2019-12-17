@@ -18,6 +18,7 @@
           type="number"
           step="0.1"
           max="1"
+          min="0"
           v-model="buttonData.style.opacity"
         />
       </div>
@@ -31,7 +32,7 @@
           style="width: 75px;"
           type="number"
           step="1"
-          max="32"
+          max="48"
           v-model="buttonData.style.fontSize"
         />
       </div>

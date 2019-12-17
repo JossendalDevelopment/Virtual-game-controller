@@ -173,8 +173,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  background-color: rgba(225, 225, 225, 0.15);
-  backdrop-filter: blur(3px);
+  /* background-color: rgba(225, 225, 225, 0.15); */
+  /* backdrop-filter: blur(3px); */
   position: relative;
   position: absolute;
   width: 100%;

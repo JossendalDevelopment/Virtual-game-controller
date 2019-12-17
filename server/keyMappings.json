@@ -6,15 +6,20 @@
       "key": "a",
       "keyCode": 65,
       "position": {
+        "x": 100,
+        "y": 100,
         "width": 150,
         "height": 100,
         "top": 100,
+        "right": 250,
+        "bottom": 200,
         "left": 100
       },
       "style": {
-        "background": "#ff0000",
-        "color": "#400040",
-        "fontSize": "32"
+        "background": "#fdf002",
+        "color": "#000000",
+        "fontSize": "32",
+        "opacity": 1
       }
     }
   ]

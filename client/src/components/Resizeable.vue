@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     onPress() {
-      console.log("BAKIT");
       if (!this.editing) this.$emit("pressed", this.buttonData);
     },
     handleDragStart(event, element) {
@@ -107,7 +106,6 @@ export default {
     handleDrop(event, element) {
       const elements = document.querySelectorAll(".resizable");
       const offset = event.dataTransfer.getData("text/plain").split(",");
-      console.log("ELS", elements.length, "OFFSET", offset);
       elements[parseInt(offset[2])].style.left =
         event.clientX + parseInt(offset[0], 10) + "px";
       elements[parseInt(offset[2])].style.top =
