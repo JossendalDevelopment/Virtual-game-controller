@@ -1,10 +1,12 @@
 import axios from "axios";
-// TODO implement default axios instance service
+import api, { getWidgetImageUrl } from "../services/api.service";
+import { Binding } from "../types/binding";
 
 export const mappings = {
   namespaced: true,
   state: {
-    userBindings: []
+    userBindings: [],
+    loading: false
   },
   getters: {
     mappings: state => {
@@ -23,27 +25,29 @@ export const mappings = {
         b => b.id === payload.newBinding.id
       );
       state.userBindings[index] = payload.newBinding;
-      console.log("UPDATED", state.userBindings);
     },
-    addBinding(state) {
-      state.userBindings = [
-        ...state.userBindings,
-        {
-          buttonName: "W",
-          id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
-          key: "w",
-          keyCode: 87,
-          position: {
-            width: 150,
-            height: 100,
-            top: 100,
-            left: 100
-          },
-          style: {
-            background: "#e2e2e2"
-          }
+    duplicateBinding(state, payload) {
+      const shifted = {
+        ...payload,
+        id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
+        position: {
+          ...payload.position,
+          left: payload.position.left + 20
         }
-      ];
+      };
+      const newBinding = new Binding(shifted);
+      state.userBindings = [...state.userBindings, newBinding];
+    },
+    async addBinding(state, filename) {
+      let fileuri = undefined;
+      if (filename) {
+        fileuri = await getWidgetImageUrl(filename);
+      }
+      const newBinding = new Binding({
+        image: filename || undefined,
+        imageUrl: fileuri || undefined
+      });
+      state.userBindings = [...state.userBindings, newBinding];
     },
     startLoading(state) {
       state.loading = true;
@@ -55,17 +59,15 @@ export const mappings = {
   actions: {
     async getKeyBindings({ commit }) {
       try {
-        const jsonData = await axios.get(
-          `http://${process.env.VUE_APP_API_HOST}:5000/get_key_mapping`
-        );
-        const bindings = jsonData.data.keyMappings;
-        commit("setUserBindings", bindings);
-        return bindings;
+        const widgets = await api.loadWidgets();
+        commit("setUserBindings", widgets);
+        return widgets;
       } catch (error) {
         console.log("Error in 'getKeyBindings action", error);
       }
     },
     async setKeyBindings({ commit }, payload) {
+      // TODO move to api service
       try {
         await axios.post(
           `http://${process.env.VUE_APP_API_HOST}:5000/set_key_mapping`,
@@ -80,8 +82,11 @@ export const mappings = {
     update({ commit }, payload) {
       commit("updateBinding", payload);
     },
-    addBinding({ commit }) {
-      commit("addBinding");
+    addBinding({ commit }, payload) {
+      commit("addBinding", payload.filename);
+    },
+    duplicateBinding({ commit }, payload) {
+      commit("duplicateBinding", payload.binding);
     },
     startLoading({ commit }) {
       commit("startLoading");

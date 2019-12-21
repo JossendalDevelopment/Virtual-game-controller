@@ -1,13 +1,6 @@
 <template>
   <div :style="setStyles">
     <p style="text-align: center;">{{ data.buttonName }}</p>
-    <img
-      v-if="editing"
-      slot="top-right-icon"
-      style="position: absolute; cursor: pointer; z-index: 301; top: 5px; right: 5px; height: 18%; width: 18%;"
-      src="@/assets/gear-option.svg"
-      @click="$emit('show-settings', data)"
-    />
   </div>
 </template>
 <script>
@@ -16,27 +9,38 @@ export default {
     data: {
       type: Object,
       required: true
-    },
-    editing: {
-      type: Boolean,
-      required: false,
-      default: false
     }
   },
   computed: {
     setStyles() {
-      return {
+      let styles = {
         display: "flex",
         alignItems: "center",
-        background: this.data.style.background,
+        backgroundColor: this.data.style.backgroundColor,
         opacity: this.data.style.opacity,
-        color: this.data.style.color,
+        color: this.data.style.textColor,
         fontSize: this.data.style.fontSize + "px",
-        border: "2px solid white",
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderRadius: this.data.style.borderRadius + "%",
+        borderColor: this.data.style.borderColor,
         justifyContent: "center",
         height: "100%",
-        width: "100%"
+        width: "100%",
+        left: this.data.position.left + "px",
+        top: this.data.position.top + "px"
       };
+      if (this.data.image) {
+        styles = {
+          ...styles,
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          borderWidth: 0,
+          backgroundImage: `url(${this.data.imageUrl})`
+        };
+      }
+      return styles;
     }
   }
 };

@@ -1,35 +1,49 @@
 <template>
   <div id="app" v-if="loaded">
-    <div class="red_button" @click="editing = !editing">
-      <p>Edit</p>
+    <div class="border">
+      <div class="border_tabs">
+        <span
+          v-for="tab in tabs"
+          :key="tab.name"
+          @click="tab.action"
+          class="border_tab"
+        >{{ tab.name }}</span>
+      </div>
     </div>
-    <div v-if="editing" class="red_button" style="top: 85px;" @click="addBinding()">
-      <p>Add</p>
-    </div>
+    <AddWidgetModal :editing="editing" />
     <Resizeable
-      v-for="(button, index) of keyMappings"
+      v-for="(button, index) of $bindings.userBindings"
       :key="index"
       :editing="editing"
       :buttonData="button"
       :buttonIndex="index"
-      @drag-end="event => setButtonDimensions(event, index)"
+      :selected="currentButton.id === button.id"
+      @drag-end="event => setButtonDimensions(event)"
       @pressed="event => handleClick(event)"
     >
-      <VirtualButton
-        slot="content"
-        :data="button"
-        :editing="editing"
-        @show-settings="button => showButtonSettings(button)"
+      <Rocker v-if="button.type=='rocker'" :data="button" slot="content" />
+      <VirtualButton v-else :data="button" slot="content" />
+      <img
+        v-if="editing"
+        slot="top-right-icon"
+        style="position: absolute; cursor: pointer; z-index: 301; top: 5px; right: 5px; height: 18%; width: 18%;"
+        src="@/assets/gear-option.svg"
+        @click="showButtonSettings(button)"
       />
     </Resizeable>
-    <Resizeable v-if="showModal" :buttonIndex="this.keyMappings.length" :editing="editing">
+    <Resizeable
+      v-if="showModal"
+      :buttonIndex="this.$bindings.userBindings.length"
+      :editing="editing"
+    >
       <ButtonSettingsModal
         slot="content"
         :showModal="showModal"
         :data="currentButton"
         @set-binding="button => setBindingForButton(button)"
-        @close="() => this.showModal = false"
+        @close="showModal = false; currentButton = {};"
         @delete="button => deleteButton(button)"
+        @change="button => setButtonDimensions(button)"
       />
     </Resizeable>
 
@@ -61,27 +75,44 @@ import io from "socket.io-client";
 
 import KeyboardLayout from "./keyboardLayout.json";
 
+import Rocker from "./components/buttons/Rocker.vue";
 import Resizeable from "./components/Resizeable.vue";
 import VirtualButton from "./components/VirtualButton.vue";
 import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
+import AddWidgetModal from "./components/AddWidgetModal.vue";
 
 export default {
   name: "App",
   components: {
+    Rocker,
+    Resizeable,
     VirtualButton,
-    ButtonSettingsModal,
-    Resizeable
+    AddWidgetModal,
+    ButtonSettingsModal
   },
-  data: () => ({
-    socket: null,
-    keyListeners: null,
-    keyboardLayout: KeyboardLayout,
-    editing: false,
-    showModal: false,
-    loaded: false,
-    currentButton: {}
-  }),
-  mounted() {
+  data() {
+    return {
+      socket: null,
+      keyListeners: null,
+      keyboardLayout: KeyboardLayout,
+      editing: false,
+      showModal: false,
+      loaded: false,
+      currentButton: {},
+      tabs: [
+        { name: "Screen 1", action: () => {} },
+        {
+          name: "Settings",
+          action: () => {
+            this.editing = !this.editing;
+            this.currentButton = {};
+          }
+        }
+      ]
+    };
+  },
+  async mounted() {
+    // TODO make this host ip configurable
     this.socket = io(`http://192.168.50.148:${5000}`);
 
     this.socket.on("connection", () => {
@@ -104,7 +135,8 @@ export default {
       this.currentButton = {
         ...this.currentButton,
         key: e.key,
-        keyCode: e.keyCode
+        keyCode: e.keyCode,
+        location: e.location // ex. 1 is left alt, 2 is right alt, 0 is non-positional
       };
       this.$bindings.update(this.currentButton);
       this.removeListeners();
@@ -118,16 +150,7 @@ export default {
   destroy() {
     this.removeListeners();
   },
-  computed: {
-    keyMappings() {
-      return this.$bindings.userBindings;
-    }
-  },
   methods: {
-    addBinding() {
-      this.$bindings.addBinding();
-      this.editing = true;
-    },
     showButtonSettings(button) {
       this.currentButton = button;
       this.showModal = true;
@@ -146,16 +169,18 @@ export default {
       this.socket.emit("keypress", e);
     },
     deleteButton(button) {
-      const index = this.keyMappings.findIndex(item => item.id == button.id);
-      this.keyMappings = this.keyMappings.splice(index, 1);
+      const index = this.$bindings.userBindings.findIndex(
+        item => item.id == button.id
+      );
+      const newKeyMappings = this.$bindings.userBindings.splice(index, 1);
 
-      this.$bindings.setUserKeybindings(this.keyMappings);
+      this.$bindings.setUserKeybindings(newKeyMappings);
       this.showModal = false;
     },
-    setButtonDimensions(event, index) {
-      this.keyMappings[index] = event;
+    setButtonDimensions(event) {
+      this.$bindings.update(event);
 
-      this.$bindings.setUserKeybindings(this.keyMappings);
+      this.$bindings.setUserKeybindings(this.$bindings.userBindings);
     }
   }
 };
@@ -163,26 +188,52 @@ export default {
 
 <style>
 body {
+  position: relative;
   box-sizing: border-box;
   background: rgb(31, 31, 31);
+  /* background: rgb(240, 240, 240); */
   background-size: cover;
   margin: 0;
+  width: 100vw;
+  height: 100vh;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  /* background-color: rgba(225, 225, 225, 0.15); */
-  /* backdrop-filter: blur(3px); */
-  position: relative;
-  position: absolute;
-  width: 100%;
-  height: 100%;
   left: 0;
   top: 0;
   bottom: 0;
   right: 0;
+}
+.border {
+  position: absolute;
+  left: 15px;
+  top: 35px;
+  bottom: 15px;
+  right: 15px;
+  border: 2px solid rgba(62, 168, 255, 0.733);
+  border-radius: 10px;
+}
+.border_tabs {
+  position: absolute;
+  left: 35px;
+  top: -24px;
+}
+.border_tab {
+  border-top: 2px solid rgba(62, 168, 255, 0.733);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  text-align: center;
+  color: #e2e2e2;
+  padding: 4px 25px;
+}
+.border_tab:hover {
+  border-top: 2px solid rgba(255, 238, 5, 0.76);
+}
+.border_tab:active {
+  background-color: rgba(24, 95, 153, 0.76);
 }
 .red_button {
   text-align: center;
@@ -192,7 +243,7 @@ body {
   height: 50px;
   background-image: linear-gradient(red, rgb(172, 0, 0));
   position: absolute;
-  top: 30px;
+  top: 40px;
   right: 30px;
   z-index: 10;
 }

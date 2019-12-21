@@ -19,8 +19,11 @@ export default {
               newBinding
             });
           };
-          bindings.addBinding = () => {
-            return store.dispatch("mappings/addBinding");
+          bindings.addBinding = filename => {
+            return store.dispatch("mappings/addBinding", { filename });
+          };
+          bindings.duplicate = binding => {
+            return store.dispatch("mappings/duplicateBinding", { binding });
           };
           return bindings;
         }

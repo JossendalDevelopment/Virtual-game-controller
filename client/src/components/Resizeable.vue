@@ -10,10 +10,26 @@
     <div class="resizers">
       <slot name="content" />
       <template v-if="editing">
-        <div class="resizer top-left" :class="'resizer' + data.id" />
-        <div class="resizer top-right" :class="'resizer' + data.id" />
-        <div class="resizer bottom-left" :class="'resizer' + data.id" />
-        <div class="resizer bottom-right" :class="'resizer' + data.id" />
+        <div
+          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          class="resizer top-left"
+          :class="'resizer' + data.id"
+        />
+        <div
+          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          class="resizer top-right"
+          :class="'resizer' + data.id"
+        />
+        <div
+          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          class="resizer bottom-left"
+          :class="'resizer' + data.id"
+        />
+        <div
+          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          class="resizer bottom-right"
+          :class="'resizer' + data.id"
+        />
       </template>
     </div>
   </div>
@@ -46,6 +62,11 @@ export default {
     editing: {
       type: Boolean,
       required: true
+    },
+    selected: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -64,21 +85,32 @@ export default {
         const element = this.$refs[`resizable${this.buttonIndex}`];
         this.makeEditable(element);
       });
+    },
+    "buttonData.position": {
+      handler: function(newVal, oldVal) {
+        console.log("POSITION CHANGED", newVal, oldVal);
+        const element = this.$refs[`resizable${this.buttonIndex}`];
+        this.setElementPosition(element, newVal);
+      },
+      deep: true
     }
   },
   mounted() {
     const element = this.$refs[`resizable${this.buttonIndex}`];
     if (this.buttonData.position) {
-      element.style.width = this.buttonData.position.width + "px";
-      element.style.height = this.buttonData.position.height + "px";
-      element.style.top = this.buttonData.position.top + "px";
-      element.style.left = this.buttonData.position.left + "px";
+      this.setElementPosition(element, this.buttonData.position);
       if (this.editing) {
         this.makeEditable(element);
       }
     }
   },
   methods: {
+    setElementPosition(element, position) {
+      element.style.width = position.width + "px";
+      element.style.height = position.height + "px";
+      element.style.top = position.top + "px";
+      element.style.left = position.left + "px";
+    },
     onPress() {
       if (!this.editing) this.$emit("pressed", this.buttonData);
     },
@@ -270,6 +302,7 @@ export default {
   height: 10px;
   border-radius: 50%;
   background: white;
+  color: #ff2de3;
   border: 3px solid #4286f4;
   position: absolute;
   z-index: 201;
