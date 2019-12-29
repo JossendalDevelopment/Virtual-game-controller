@@ -8,14 +8,14 @@
       "key": "w",
       "keyCode": 87,
       "position": {
-        "x": 50,
-        "y": 50,
-        "width": 200,
-        "height": 200,
-        "top": 50,
-        "right": 250,
         "bottom": 250,
-        "left": 50
+        "height": 200,
+        "left": 50,
+        "right": 250,
+        "top": 50,
+        "width": 200,
+        "x": 50,
+        "y": 50
       },
       "style": {
         "backgroundColor": "#51424200",
@@ -34,19 +34,19 @@
       "key": "w",
       "keyCode": 87,
       "position": {
-        "x": 48,
-        "y": 355,
-        "width": 187,
-        "height": 163,
-        "top": 355,
+        "bottom": 473,
+        "height": 64,
+        "left": 48,
         "right": 235,
-        "bottom": 518,
-        "left": 48
+        "top": 355,
+        "width": 187,
+        "x": 48,
+        "y": 355
       },
       "style": {
         "backgroundColor": "#F2F2F200",
-        "borderColor": "#00000000",
-        "borderRadius": 1,
+        "borderColor": "#D5D5D5FF",
+        "borderRadius": "4",
         "fontSize": "26",
         "opacity": 1,
         "textColor": "#CBCBCBFF"
@@ -58,17 +58,18 @@
       "id": 7559468207423923,
       "image": "glass_button_blue.png",
       "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_blue.png?alt=media&token=9fc7d374-fbb7-4045-a5ec-bd6c76bffe44",
-      "key": "w",
-      "keyCode": 87,
+      "key": "r",
+      "keyCode": 114,
+      "location": 0,
       "position": {
-        "x": 625,
-        "y": 50,
-        "width": 200,
-        "height": 200,
-        "top": 50,
-        "right": 825,
         "bottom": 250,
-        "left": 625
+        "height": 200,
+        "left": 625,
+        "right": 825,
+        "top": 50,
+        "width": 200,
+        "x": 625,
+        "y": 50
       },
       "style": {
         "backgroundColor": "#F2F2F200",
@@ -88,14 +89,14 @@
       "key": "w",
       "keyCode": 87,
       "position": {
-        "x": 337,
-        "y": 50,
-        "width": 200,
-        "height": 200,
-        "top": 50,
-        "right": 537,
         "bottom": 250,
-        "left": 337
+        "height": 200,
+        "left": 337,
+        "right": 537,
+        "top": 50,
+        "width": 200,
+        "x": 337,
+        "y": 50
       },
       "style": {
         "backgroundColor": "#F2F2F200",

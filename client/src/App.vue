@@ -21,8 +21,8 @@
       @drag-end="event => setButtonDimensions(event)"
       @pressed="event => handleClick(event)"
     >
-      <Rocker v-if="button.type=='rocker'" :data="button" slot="content" />
-      <VirtualButton v-else :data="button" slot="content" />
+      <!-- <Rocker v-if="button.type=='rocker'" :data="button" slot="content" /> -->
+      <VirtualButton :data="button" slot="content" />
       <img
         v-if="editing"
         slot="top-right-icon"
@@ -75,7 +75,7 @@ import io from "socket.io-client";
 
 import KeyboardLayout from "./keyboardLayout.json";
 
-import Rocker from "./components/buttons/Rocker.vue";
+// import Rocker from "./components/buttons/Rocker.vue";
 import Resizeable from "./components/Resizeable.vue";
 import VirtualButton from "./components/VirtualButton.vue";
 import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
@@ -84,7 +84,7 @@ import AddWidgetModal from "./components/AddWidgetModal.vue";
 export default {
   name: "App",
   components: {
-    Rocker,
+    // Rocker,
     Resizeable,
     VirtualButton,
     AddWidgetModal,
@@ -128,10 +128,12 @@ export default {
       console.log("keypress repsonse received", response);
       if (response.status === 500) {
         // TODO show an error popup
+        console.error("Error in keypress response", response);
       }
     });
 
     this.keyListeners = e => {
+      console.log("KEY", e);
       this.currentButton = {
         ...this.currentButton,
         key: e.key,
@@ -159,7 +161,7 @@ export default {
       this.addListeners();
     },
     addListeners() {
-      window.addEventListener("keyup", this.keyListeners);
+      window.addEventListener("keypress", this.keyListeners);
     },
     removeListeners() {
       window.removeEventListener("keyup", this.keyListeners);
@@ -187,10 +189,19 @@ export default {
 </script>
 
 <style>
+:root {
+  --primary-color: #c5c5c5 !important;
+  --secondary-color: #6c7478 !important;
+  --tertiary-color: #ffffff !important;
+  --off-black: #1f1f1f !important;
+  --success-color: #80b855 !important;
+  --warning-color: #eaca44 !important;
+  --error-color: #ef4d4d !important;
+}
 body {
   position: relative;
   box-sizing: border-box;
-  background: rgb(31, 31, 31);
+  background: var(--off-black);
   /* background: rgb(240, 240, 240); */
   background-size: cover;
   margin: 0;
@@ -213,7 +224,8 @@ body {
   top: 35px;
   bottom: 15px;
   right: 15px;
-  border: 2px solid rgba(62, 168, 255, 0.733);
+  border: 2px solid #3ea8ffbb;
+  background-image: linear-gradient(#3ea8ff33, #3ea8ff00, #3ea8ff00);
   border-radius: 10px;
 }
 .border_tabs {

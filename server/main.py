@@ -2,6 +2,7 @@ from network_setup import Window
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask import Flask, request, jsonify, url_for, Response
+from ctypes_init import keyboard_stream, SendInput
 import asyncio
 import ssl
 import secrets
@@ -76,7 +77,12 @@ def handle_keypress(json_data, methods=['GET', 'POST']):
     print('received keypress: ', json_data)
     time.sleep(3)
     try:
-        keyboard.press_and_release(json_data['key'])
+        # keyboard.press_and_release(json_data['key'])
+        # keyboard_stream(json_data['key'])
+
+        for event in keyboard_stream(json_data['key']):
+            SendInput(event)
+            time.sleep(0.1)
         socketio.emit('keypress-response', json_data,
                       callback=message_received)
     except ValueError:
