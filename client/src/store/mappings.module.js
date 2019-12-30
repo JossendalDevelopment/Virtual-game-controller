@@ -1,5 +1,6 @@
 import axios from "axios";
-import api, { getWidgetImageUrl } from "../services/api.service";
+import api from "../services/api.service";
+import { getWidgetImageUrl } from "../utils";
 import { Binding } from "../types/binding";
 
 export const mappings = {
@@ -45,8 +46,9 @@ export const mappings = {
       }
       const newBinding = new Binding({
         image: filename || undefined,
-        imageUrl: fileuri || undefined
+        imageUrl: fileuri
       });
+      console.log("NEW BINDING", newBinding);
       state.userBindings = [...state.userBindings, newBinding];
     },
     startLoading(state) {

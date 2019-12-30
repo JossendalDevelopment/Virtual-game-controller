@@ -1,6 +1,4 @@
 import ctypes
-# from ctypes import *
-import win32api
 
 LONG = ctypes.c_long
 DWORD = ctypes.c_ulong

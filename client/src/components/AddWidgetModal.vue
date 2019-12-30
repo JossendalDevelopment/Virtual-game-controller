@@ -1,10 +1,14 @@
 <template>
   <span>
-    <div v-if="editing" class="red_button" style="top: 50px;" @click="showMenu = true">
+    <!-- <div v-if="editing" class="red_button" style="top: 50px;" @click="showMenu = true">
       <p>Add</p>
-    </div>
-    <div v-if="showMenu" class="menu_container">
-      <span @click="showMenu = false">close</span>
+    </div>-->
+    <p @click="show()">Add A Widget</p>
+    <div v-show="showMenu" class="menu_container" ref="addWidgetModal" :style="borderStyles">
+      <span
+        @click="hide()"
+        style="display: flex; justify-content: flex-end; cursor: pointer; font-size: 20px;"
+      >X</span>
       <div>
         <span>Add custom button</span>
       </div>
@@ -26,18 +30,13 @@
 import { getWidgetImageUrl } from "../utils";
 
 export default {
-  props: {
-    editing: {
-      type: Boolean,
-      required: true
-    }
-  },
   data() {
     return {
       red: "",
       blue: "",
       green: "",
-      showMenu: false
+      showMenu: false,
+      themeColor: "white" // set this in vuex
     };
   },
   async created() {
@@ -45,7 +44,22 @@ export default {
     this.green = await this.fetchUrl("glass_button_green.png");
     this.blue = await this.fetchUrl("glass_button_blue.png");
   },
+  computed: {
+    borderStyles() {
+      return {
+        border: `2px solid var(--primary-${this.themeColor})`
+      };
+    }
+  },
   methods: {
+    show() {
+      this.showMenu = true;
+      this.$refs.addWidgetModal.classList.add("is_active");
+    },
+    hide() {
+      this.showMenu = false;
+      this.$refs.addWidgetModal.classList.remove("is_active");
+    },
     addBinding(filename) {
       this.$bindings.addBinding(filename);
     },
@@ -58,12 +72,27 @@ export default {
 </script>
 <style>
 .menu_container {
-  position: absolute;
-  top: 0;
-  right: 0;
+  visibility: hidden;
+  position: fixed;
+  top: 40px;
+  right: 17px;
+  padding: 12px;
+  width: 0px;
+  height: 0px;
+  transition: height 600ms;
+  transition: width 600ms;
+  font-size: 8px;
+  transition: font-size 600ms;
+  border-radius: 10px;
   z-index: 501;
-  background-color: #a2a2a2;
-  border: 1px solid black;
+  color: var(--primary-color);
+  background: var(--off-black) !important;
+}
+.menu_container.is_active {
+  visibility: visible;
+  height: auto;
+  width: auto;
+  font-size: 18px;
 }
 .add_button_img {
   height: 30px;

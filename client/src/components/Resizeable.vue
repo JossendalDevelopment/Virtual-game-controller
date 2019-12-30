@@ -11,22 +11,22 @@
       <slot name="content" />
       <template v-if="editing">
         <div
-          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          :style="selected ? { border: '3px solid #ff2de3' } : undefined"
           class="resizer top-left"
           :class="'resizer' + data.id"
         />
         <div
-          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          :style="selected ? { border: '3px solid #ff2de3' } : undefined"
           class="resizer top-right"
           :class="'resizer' + data.id"
         />
         <div
-          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          :style="selected ? { border: '3px solid #ff2de3' } : undefined"
           class="resizer bottom-left"
           :class="'resizer' + data.id"
         />
         <div
-          :style="selected ? {border: '3px solid #ff2de3'} : undefined"
+          :style="selected ? { border: '3px solid #ff2de3' } : undefined"
           class="resizer bottom-right"
           :class="'resizer' + data.id"
         />
@@ -111,6 +111,10 @@ export default {
       element.style.top = position.top + "px";
       element.style.left = position.left + "px";
     },
+    positionToPercent(num) {
+      const n = (num / window.innerWidth) * 100;
+      return n;
+    },
     onPress() {
       if (!this.editing) this.$emit("pressed", this.buttonData);
     },
@@ -149,10 +153,23 @@ export default {
       }
 
       // TODO do not emit this event for drop event of settings modal
+      const rect = element.getBoundingClientRect();
+
       this.data = {
         ...this.data,
-        position: element.getBoundingClientRect()
+        position: rect
       };
+      // this.data = {
+      //   ...this.data,
+      //   position: {
+      //     left: this.positionToPercent(rect.left),
+      //     right: this.positionToPercent(rect.right),
+      //     top: this.positionToPercent(rect.top),
+      //     bottom: this.positionToPercent(rect.bottom),
+      //     height: this.positionToPercent(rect.height),
+      //     width: this.positionToPercent(rect.width)
+      //   }
+      // };
       this.$emit("drag-end", this.data);
 
       return false;
@@ -264,9 +281,22 @@ export default {
         };
 
         const stopResize = () => {
+          const rect = element.getBoundingClientRect();
+
+          // this.data = {
+          //   ...this.data,
+          //   position: {
+          //     left: this.positionToPercent(rect.left),
+          //     right: this.positionToPercent(rect.right),
+          //     top: this.positionToPercent(rect.top),
+          //     bottom: this.positionToPercent(rect.bottom),
+          //     height: this.positionToPercent(rect.height),
+          //     width: this.positionToPercent(rect.width)
+          //   }
+          // };
           this.data = {
             ...this.data,
-            position: element.getBoundingClientRect()
+            position: rect
           };
           this.$emit("drag-end", this.data);
           window.removeEventListener("mousemove", resize);

@@ -1,112 +1,63 @@
 {
   "keyMappings": [
     {
-      "buttonName": "ON",
+      "buttonName": "Flight Ready",
       "id": 2074640101391419,
       "image": "glass_button_green.png",
       "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_green.png?alt=media&token=09c4d5b9-cf71-4613-a726-5344f2e74277",
-      "key": "w",
-      "keyCode": 87,
+      "key": [
+        "0x52"
+      ],
+      "keyCode": 82,
+      "location": 0,
       "position": {
-        "bottom": 250,
-        "height": 200,
-        "left": 50,
-        "right": 250,
-        "top": 50,
-        "width": 200,
-        "x": 50,
-        "y": 50
+        "bottom": 272.1374969482422,
+        "height": 223.1374969482422,
+        "left": 25,
+        "right": 251.9250030517578,
+        "top": 49,
+        "width": 226.9250030517578,
+        "x": 25,
+        "y": 49
       },
       "style": {
         "backgroundColor": "#51424200",
         "borderColor": "#000000",
         "borderRadius": "0",
-        "fontSize": "48",
+        "fontSize": "44",
         "opacity": "1",
         "textColor": "#CBCBCBFF"
       }
     },
     {
-      "buttonName": "ENGINES",
-      "id": 780189173793671,
-      "image": null,
-      "imageUrl": null,
-      "key": "w",
-      "keyCode": 87,
+      "buttonName": "Spool Drive",
+      "id": 3126376018685675,
+      "image": "glass_button_red.png",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_red.png?alt=media&token=e5696fbc-328e-48ea-8d3f-526da955b9a7",
+      "key": [
+        "0x4E"
+      ],
+      "keyCode": 78,
       "position": {
-        "bottom": 473,
-        "height": 64,
-        "left": 48,
-        "right": 235,
-        "top": 355,
-        "width": 187,
-        "x": 48,
-        "y": 355
-      },
-      "style": {
-        "backgroundColor": "#F2F2F200",
-        "borderColor": "#D5D5D5FF",
-        "borderRadius": "4",
-        "fontSize": "26",
-        "opacity": 1,
-        "textColor": "#CBCBCBFF"
-      },
-      "type": "rocker"
-    },
-    {
-      "buttonName": "CHARGE",
-      "id": 7559468207423923,
-      "image": "glass_button_blue.png",
-      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_blue.png?alt=media&token=9fc7d374-fbb7-4045-a5ec-bd6c76bffe44",
-      "key": "r",
-      "keyCode": 114,
-      "location": 0,
-      "position": {
-        "bottom": 250,
-        "height": 200,
-        "left": 625,
-        "right": 825,
-        "top": 50,
-        "width": 200,
-        "x": 625,
-        "y": 50
+        "bottom": 506,
+        "height": 206,
+        "left": 37,
+        "right": 243,
+        "top": 300,
+        "width": 206,
+        "x": 37,
+        "y": 300
       },
       "style": {
         "backgroundColor": "#F2F2F200",
         "borderColor": "#000000",
         "borderRadius": 1,
-        "fontSize": 32,
+        "fontSize": "33",
         "opacity": 1,
-        "textColor": "#CBCBCBFF"
+        "textColor": "#E6E6E6FF"
       },
-      "type": "custom"
-    },
-    {
-      "buttonName": "CHARGE",
-      "id": 1016676557128349,
-      "image": "glass_button_blue.png",
-      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_blue.png?alt=media&token=9fc7d374-fbb7-4045-a5ec-bd6c76bffe44",
-      "key": "w",
-      "keyCode": 87,
-      "position": {
-        "bottom": 250,
-        "height": 200,
-        "left": 337,
-        "right": 537,
-        "top": 50,
-        "width": 200,
-        "x": 337,
-        "y": 50
-      },
-      "style": {
-        "backgroundColor": "#F2F2F200",
-        "borderColor": "#000000",
-        "borderRadius": 1,
-        "fontSize": 32,
-        "opacity": 1,
-        "textColor": "#CBCBCBFF"
-      },
-      "type": "custom"
+      "type": "custom",
+      "location": 0
     }
   ]
 }

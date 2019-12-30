@@ -77,6 +77,7 @@ export default {
       this.currentTab = tab;
     },
     save() {
+      console.log("SAVING", this.buttonData);
       this.$bindings.update(this.buttonData);
       this.$bindings.setUserKeybindings(this.$bindings.userBindings);
       this.$emit("close");

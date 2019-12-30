@@ -9,6 +9,7 @@ import secrets
 import json
 import keyboard
 import time
+import win32api
 import eventlet
 eventlet.monkey_patch()
 
@@ -74,15 +75,20 @@ def handle_json(json):
 
 @socketio.on('keypress')
 def handle_keypress(json_data, methods=['GET', 'POST']):
-    print('received keypress: ', json_data)
     time.sleep(3)
     try:
+        print('received keypress: ', json_data['key'])
         # keyboard.press_and_release(json_data['key'])
         # keyboard_stream(json_data['key'])
 
-        for event in keyboard_stream(json_data['key']):
-            SendInput(event)
+        for event in json_data['key']:
+            win32api.keybd_event(int(event, base=16), 0, 0, 0)
             time.sleep(0.1)
+        # for event in json_data['key']:
+        #     win32api.keybd_event(event, 0, 0, 0)
+        #     # win32api.keybd_event(0x010, 0, 0, 0)
+        #     # SendInput(event)
+        #     time.sleep(0.1)
         socketio.emit('keypress-response', json_data,
                       callback=message_received)
     except ValueError:
