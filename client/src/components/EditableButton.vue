@@ -13,9 +13,7 @@
     ref="moveable"
   >-->
   <!-- <span>BBBBBBBBIIIIIIIIIIIIFFFFFFFFFFFFFF</span> -->
-  <div ref="button"
-draggable="true" class="button"
-@click="handleClick">
+  <div ref="button" draggable="true" class="button" @click="handleClick">
     {{ data.buttonName }}
     <img
       v-if="editing"

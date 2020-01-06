@@ -2,7 +2,7 @@
   <div
     :ref="`resizable${buttonIndex}`"
     class="resizable"
-    :draggable="editing"
+    :draggable="$theme.editingState"
     :data-item="buttonIndex"
     @click="onPress"
   >
@@ -59,10 +59,6 @@ export default {
       type: Number,
       required: true
     },
-    editing: {
-      type: Boolean,
-      required: true
-    },
     selected: {
       type: Boolean,
       required: false,
@@ -77,6 +73,9 @@ export default {
   computed: {
     buttonStyles() {
       return this.buttonData.styles;
+    },
+    editing() {
+      return this.$theme.editingState;
     }
   },
   watch: {
@@ -87,8 +86,7 @@ export default {
       });
     },
     "buttonData.position": {
-      handler: function(newVal, oldVal) {
-        console.log("POSITION CHANGED", newVal, oldVal);
+      handler: function(newVal) {
         const element = this.$refs[`resizable${this.buttonIndex}`];
         this.setElementPosition(element, newVal);
       },

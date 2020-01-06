@@ -2,37 +2,49 @@
   <div id="app" v-if="loaded">
     <div class="border" :style="borderStyles">
       <div class="settings_menu" ref="settingsMenu" :style="borderStyles">
-        <AddWidgetModal :editing="editing" />
+        <AddWidgetModal :editing="$theme.editingState" />
         <p>Set Your IP</p>
         <p>Enable Editing</p>
         <div>
           <p>Change Color</p>
           <div
             style="display: inline-flex; height: 20px; width: 20px; backgroundColor: var(--primary-red)"
-            @click="themeColor = 'red'"
+            @click="setTheme('red')"
           ></div>
           <div
             style="display: inline-flex; height: 20px; width: 20px; backgroundColor: var(--primary-blue)"
-            @click="themeColor = 'blue'"
+            @click="setTheme('blue')"
           ></div>
           <div
             style="display: inline-flex; height: 20px; width: 20px; backgroundColor: var(--primary-white)"
-            @click="themeColor = 'white'"
+            @click="setTheme('white')"
+          ></div>
+          <div
+            style="display: inline-flex; height: 20px; width: 20px; backgroundColor: var(--primary-green)"
+            @click="setTheme('green')"
           ></div>
         </div>
         <p>Remove AddWidgetModal</p>
       </div>
     </div>
     <div class="border_tabs">
+      <span class="border_tabs_left">
+        <span
+          v-for="tab in tabs"
+          :key="tab.name"
+          @click="tab.action"
+          class="border_tab"
+          :style="borderTabStyles"
+        >{{ tab.name }}</span>
+      </span>
       <span
-        v-for="tab in tabs"
-        :key="tab.name"
-        @click="tab.action"
-        class="border_tab"
+        class="border_tab settings_menu_button"
         :style="borderTabStyles"
-      >{{ tab.name }}</span>
+        @click="openSettingsMenu"
+      >Settings</span>
     </div>
-    <Resizeable
+    <component :is="currentTab.component" :data="currentTab.props" />
+    <!-- <Resizeable
       v-for="(button, index) of $bindings.userBindings"
       :key="index"
       :editing="editing"
@@ -42,7 +54,7 @@
       @drag-end="event => setButtonDimensions(event)"
       @pressed="event => handleClick(event)"
     >
-      <!-- <Rocker v-if="button.type=='rocker'" :data="button" slot="content" /> -->
+      <Rocker v-if="button.type=='rocker'" :data="button" slot="content" />
       <VirtualButton :data="button" slot="content" />
       <img
         v-if="editing"
@@ -69,7 +81,7 @@
         @delete="button => deleteButton(button)"
         @change="button => setButtonDimensions(button)"
       />
-    </Resizeable>
+    </Resizeable>-->
 
     <!-- <div
       v-if="editing"
@@ -95,25 +107,27 @@
 </template>
 
 <script>
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
 import KeyboardLayout from "./keyboardLayout.json";
 import ToHex from "./toHex.json";
 
 // import Rocker from "./components/buttons/Rocker.vue";
-import Resizeable from "./components/Resizeable.vue";
-import VirtualButton from "./components/VirtualButton.vue";
-import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
+// import Resizeable from "./components/Resizeable.vue";
+// import VirtualButton from "./components/VirtualButton.vue";
+// import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
 import AddWidgetModal from "./components/AddWidgetModal.vue";
+import CustomView from "./views/Custom.vue";
+import MFDView from "./views/Mfd.vue";
 
 export default {
   name: "App",
   components: {
     // Rocker,
-    Resizeable,
-    VirtualButton,
-    AddWidgetModal,
-    ButtonSettingsModal
+    // Resizeable,
+    // VirtualButton,
+    AddWidgetModal
+    // ButtonSettingsModal
   },
   data() {
     return {
@@ -121,80 +135,56 @@ export default {
       keyListeners: null,
       keyboardLayout: KeyboardLayout,
       toHex: ToHex,
-      editing: false,
       showModal: false,
       loaded: false,
       currentButton: {},
-      themeColor: "white",
+      currentTab: {
+        name: "Mfd 1",
+        action: () => {
+          this.currentTab = this.tabs[1];
+        },
+        props: {},
+        component: MFDView
+      },
       tabs: [
-        { name: "Screen 1", action: () => {} },
         {
-          name: "Settings",
+          name: "Custom",
           action: () => {
-            this.editing = !this.editing;
-            this.currentButton = {};
-            this.$refs.settingsMenu.classList.toggle("is_active");
-          }
+            this.currentTab = this.tabs[0];
+          },
+          props: {},
+          component: CustomView
+        },
+        {
+          name: "Mfd 1",
+          action: () => {
+            this.currentTab = this.tabs[1];
+          },
+          props: {},
+          component: MFDView
         }
       ]
-    };
-  },
-  async mounted() {
-    // TODO make this host ip configurable
-    this.socket = io(`http://192.168.50.148:${5000}`);
-
-    this.socket.on("connection", () => {
-      console.log("Connection established");
-      this.socket.on("disconnect", () => {
-        console.log("Connection terminated");
-      });
-    });
-
-    this.socket.on("error", error => console.log("Connection error:", error));
-
-    this.socket.on("keypress-response", response => {
-      console.log("keypress repsonse received", response);
-      if (response.status === 500) {
-        // TODO show an error popup
-        console.error("Error in keypress response", response);
-      }
-    });
-
-    this.keyListeners = e => {
-      // console.log("KEY", e);
-      this.currentButton = {
-        ...this.currentButton,
-        key: [this.toHex[e.key]],
-        keyCode: e.keyCode,
-        location: e.location // ex. 1 is left alt, 2 is right alt, 0 is non-positional
-      };
-      this.$bindings.update(this.currentButton);
-      this.removeListeners();
-      // this.socket.emit("keypress", e);
     };
   },
   async created() {
     await this.$bindings.getUserKeybindings();
     this.loaded = true;
   },
-  destroy() {
-    this.removeListeners();
-  },
   computed: {
     borderStyles() {
       return {
         backgroundImage: `linear-gradient(
-    var(--primary-${this.themeColor}-lighten),
+    var(--primary-${this.$theme.color}-lighten),
     var(--off-black),
     var(--off-black)
   )`,
-        border: `2px solid var(--primary-${this.themeColor})`
+        border: `2px solid var(--primary-${this.$theme.color})`
       };
     },
     borderTabStyles() {
       return {
-        borderTop: `2px solid var(--primary-${this.themeColor})`,
-        borderBottom: `2px solid var(--primary-${this.themeColor})`
+        borderTop: `2px solid var(--primary-${this.$theme.color})`,
+        borderBottom: `2px solid var(--primary-${this.$theme.color})`
       };
     },
     settingsMenu() {
@@ -202,36 +192,17 @@ export default {
     }
   },
   methods: {
+    setTheme(color) {
+      this.$theme.setTheme(color);
+    },
+    openSettingsMenu() {
+      this.$theme.setEditingState(true);
+      this.currentButton = {};
+      this.$refs.settingsMenu.classList.toggle("is_active");
+    },
     showButtonSettings(button) {
       this.currentButton = button;
       this.showModal = true;
-    },
-    setBindingForButton() {
-      this.addListeners();
-    },
-    addListeners() {
-      window.addEventListener("keyup", this.keyListeners);
-    },
-    removeListeners() {
-      window.removeEventListener("keyup", this.keyListeners);
-    },
-    handleClick(e) {
-      // TODO design this to handle a down and up keypress
-      this.socket.emit("keypress", e);
-    },
-    deleteButton(button) {
-      const index = this.$bindings.userBindings.findIndex(
-        item => item.id == button.id
-      );
-      const newKeyMappings = this.$bindings.userBindings.splice(index, 1);
-
-      this.$bindings.setUserKeybindings(newKeyMappings);
-      this.showModal = false;
-    },
-    setButtonDimensions(event) {
-      this.$bindings.update(event);
-
-      this.$bindings.setUserKeybindings(this.$bindings.userBindings);
     }
   }
 };
@@ -248,6 +219,8 @@ export default {
   --primary-red-lighten: #ff2e1f33 !important;
   --primary-white: #ffffffbb !important;
   --primary-white-lighten: #ffffff33 !important;
+  --primary-green: #63ff4fbb !important;
+  --primary-green-lighten: #63ff4f33 !important;
   --success-color: #80b855 !important;
   --warning-color: #eaca44 !important;
   --error-color: #ef4d4d !important;
@@ -285,9 +258,12 @@ body {
   /* position: absolute;
   left: 35px;
   top: -24px; */
-  padding: 5px 15px;
+  padding: 5px 18px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+.border_tabs_left {
 }
 .border_tab {
   border-top: 2px solid var(--primary-red);
@@ -299,6 +275,8 @@ body {
 }
 .border_tab:active {
   background-color: rgba(24, 95, 153, 0.76);
+}
+.settings_menu_button {
 }
 .settings_menu {
   visibility: hidden;
@@ -313,7 +291,7 @@ body {
   transition: font-size 400ms;
   font-size: 8px;
   border-radius: 10px;
-  z-index: 501;
+  z-index: 601;
   color: var(--primary-color);
   background: var(--off-black) !important;
 }

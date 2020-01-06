@@ -5,6 +5,7 @@ import App from "./App.vue";
 import store from "./store";
 
 import KeyMappingsPlugin from "@/plugins/bindings";
+import ThemePlugin from "@/plugins/theme";
 
 Vue.config.productionTip = false;
 
@@ -21,6 +22,7 @@ firebase.initializeApp({
 firebase.analytics();
 
 Vue.use(KeyMappingsPlugin);
+Vue.use(ThemePlugin);
 
 new Vue({
   store,
