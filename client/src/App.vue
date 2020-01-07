@@ -2,9 +2,12 @@
   <div id="app" v-if="loaded">
     <div class="border" :style="borderStyles">
       <div class="settings_menu" ref="settingsMenu" :style="borderStyles">
-        <AddWidgetModal :editing="$theme.editingState" />
-        <p>Set Your IP</p>
-        <p>Enable Editing</p>
+        <AddWidgetModal :editing="$settings.editingState" />
+        <div style="display: flex; align-items: center;">
+          <span style="padding-right: 4px;">Local IP</span>
+          <TextInput :value="$settings.clientIP" @change="event => setIP(event)" />
+        </div>
+        <p>Toggle Widget Editing</p>
         <div>
           <p>Change Color</p>
           <div
@@ -107,8 +110,6 @@
 </template>
 
 <script>
-// import io from "socket.io-client";
-
 import KeyboardLayout from "./keyboardLayout.json";
 import ToHex from "./toHex.json";
 
@@ -117,6 +118,8 @@ import ToHex from "./toHex.json";
 // import VirtualButton from "./components/VirtualButton.vue";
 // import ButtonSettingsModal from "./components/ButtonSettingsModal.vue";
 import AddWidgetModal from "./components/AddWidgetModal.vue";
+import TextInput from "./components/inputs/TextInput.vue";
+
 import CustomView from "./views/Custom.vue";
 import MFDView from "./views/Mfd.vue";
 
@@ -126,13 +129,12 @@ export default {
     // Rocker,
     // Resizeable,
     // VirtualButton,
-    AddWidgetModal
+    AddWidgetModal,
+    TextInput
     // ButtonSettingsModal
   },
   data() {
     return {
-      socket: null,
-      keyListeners: null,
       keyboardLayout: KeyboardLayout,
       toHex: ToHex,
       showModal: false,
@@ -174,17 +176,17 @@ export default {
     borderStyles() {
       return {
         backgroundImage: `linear-gradient(
-    var(--primary-${this.$theme.color}-lighten),
+    var(--primary-${this.$settings.color}-lighten),
     var(--off-black),
     var(--off-black)
   )`,
-        border: `2px solid var(--primary-${this.$theme.color})`
+        border: `2px solid var(--primary-${this.$settings.color})`
       };
     },
     borderTabStyles() {
       return {
-        borderTop: `2px solid var(--primary-${this.$theme.color})`,
-        borderBottom: `2px solid var(--primary-${this.$theme.color})`
+        borderTop: `2px solid var(--primary-${this.$settings.color})`,
+        borderBottom: `2px solid var(--primary-${this.$settings.color})`
       };
     },
     settingsMenu() {
@@ -193,10 +195,13 @@ export default {
   },
   methods: {
     setTheme(color) {
-      this.$theme.setTheme(color);
+      this.$settings.setTheme(color);
+    },
+    setIP(event) {
+      this.$settings.setClientIP(event);
     },
     openSettingsMenu() {
-      this.$theme.setEditingState(true);
+      this.$settings.setEditingState(true);
       this.currentButton = {};
       this.$refs.settingsMenu.classList.toggle("is_active");
     },
@@ -229,7 +234,6 @@ body {
   position: relative;
   box-sizing: border-box;
   background: var(--off-black);
-  /* background: rgb(240, 240, 240); */
   background-size: cover;
   margin: 0;
   width: 100vw;
@@ -255,9 +259,6 @@ body {
   border-radius: 10px;
 }
 .border_tabs {
-  /* position: absolute;
-  left: 35px;
-  top: -24px; */
   padding: 5px 18px;
   display: flex;
   justify-content: space-between;

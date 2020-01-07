@@ -1,6 +1,31 @@
 <template>
-  <div class="triangle" ref="triangle" @mousedown="dragStart" @mouseup="dragEnd">
+  <!-- <div class="triangle_container"> -->
+  <div
+    style
+    draggable="false"
+    class="triangle"
+    ref="triangle"
+    @mousedown="dragStart"
+    @mouseup="dragEnd"
+  >
+    <svg
+      style="position: relative; left: -108px"
+      width="225px"
+      height="225px"
+      ref="triangle"
+      @mousedown="dragStart"
+      @mouseup="dragEnd"
+    >
+      <desc>Colored Bordered Triangle</desc>
+      <path
+        d="M 4,175 L 108,0 L 213,175 z"
+        fill="transparent"
+        :stroke="`var(--primary-${$settings.color})`"
+        stroke-width="5"
+      />
+    </svg>
     <div class="triangle_drag_handle" ref="drag_handle"></div>
+    <!-- </div> -->
   </div>
 </template>
 <script>
@@ -10,6 +35,7 @@ export default {
     let node = document.querySelector(".triangle_drag_handle");
     const coord = this.getTriangleCoordinates(triangle);
     const center = this.centroid(coord);
+    console.log("CENTER", triangle);
 
     // //   node.setAttribute("draggable", true);
     // node.addEventListener("dragstart", () => {
@@ -157,6 +183,9 @@ export default {
 };
 </script>
 <style>
+.triangle_container {
+  z-index: 602;
+}
 .triangle {
   /* position: relative; */
   /* margin-left: 150px; */
@@ -164,25 +193,9 @@ export default {
   height: 0;
   border-left: 100px solid transparent;
   border-right: 100px solid transparent;
-  border-bottom: 172px solid white;
-  z-index: 601;
-}
-/* .triangle:after,
-.triangle:before {
-  position: absolute;
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-left: 10px solid green;
-  border-right: 10px solid green;
-  border-bottom: 10px solid green;
-  border: 2px solid green;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  border-bottom: 172px solid #ffffff33;
   z-index: 602;
-} */
+}
 .triangle_drag_handle {
   position: absolute;
   width: 20px;

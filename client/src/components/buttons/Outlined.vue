@@ -12,11 +12,11 @@ export default {
     borderStyles() {
       return {
         // backgroundImage: `linear-gradient(
-        //     var(--primary-${this.$theme.color}-lighten),
+        //     var(--primary-${this.$settings.color}-lighten),
         //     var(--off-black),
         //     var(--off-black)
         //   )`,
-        border: `2px solid var(--primary-${this.$theme.color})`
+        border: `2px solid var(--primary-${this.$settings.color})`
       };
     }
   }

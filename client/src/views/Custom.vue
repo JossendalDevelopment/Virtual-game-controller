@@ -3,7 +3,7 @@
     <Resizeable
       v-for="(button, index) of $bindings.userBindings"
       :key="index"
-      :editing="$theme.editingState"
+      :editing="$settings.editingState"
       :buttonData="button"
       :buttonIndex="index"
       :selected="currentButton.id === button.id"
@@ -13,7 +13,7 @@
       <!-- <Rocker v-if="button.type=='rocker'" :data="button" slot="content" /> -->
       <VirtualButton :data="button" slot="content" />
       <img
-        v-if="$theme.editingState"
+        v-if="$settings.editingState"
         slot="top-right-icon"
         style="position: absolute; cursor: pointer; z-index: 301; top: 5px; right: 5px; height: 18%; width: 18%;"
         src="@/assets/gear-option.svg"
@@ -23,7 +23,7 @@
     <Resizeable
       v-if="showModal"
       :buttonIndex="this.$bindings.userBindings.length"
-      :editing="$theme.editingState"
+      :editing="$settings.editingState"
     >
       <ButtonSettingsModal
         slot="content"
@@ -76,7 +76,8 @@ export default {
   },
   async mounted() {
     // TODO make this host ip configurable
-    this.socket = io(`http://192.168.50.148:${5000}`);
+    await this.$settings.getClientIP();
+    this.socket = io(`http://${this.$settings.clientIP}:${5000}`);
 
     this.socket.on("connection", () => {
       console.log("Connection established");

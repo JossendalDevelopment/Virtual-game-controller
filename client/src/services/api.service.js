@@ -4,7 +4,7 @@ import { getWidgetImageUrl } from "../utils";
 const instance = axios.create();
 instance.token = window.localStorage.getItem("token") || null;
 
-instance.new = function(url = `/`) {
+instance.new = function (url = `/`) {
   this.defaults.baseURL = url;
 
   if (this.token) {
@@ -15,7 +15,7 @@ instance.new = function(url = `/`) {
   }
 };
 
-instance.loadWidgets = async function() {
+instance.loadWidgets = async function () {
   try {
     const jsonData = await axios.get(
       `http://${process.env.VUE_APP_API_HOST}:5000/get_key_mapping`
@@ -31,6 +31,17 @@ instance.loadWidgets = async function() {
       })
     );
     return promises;
+  } catch (err) {
+    return { status: 500, msg: err };
+  }
+};
+
+instance.getClientIP = async function () {
+  try {
+    const clientIP = await axios.get(
+      `http://${process.env.VUE_APP_API_HOST}:5000/get_ip`
+    );
+    return Promise.resolve(clientIP);
   } catch (err) {
     return { status: 500, msg: err };
   }

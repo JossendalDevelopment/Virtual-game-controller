@@ -45,6 +45,12 @@ def index():
     return 'Loaded'
 
 
+@app.route('/get_ip')
+def get_ip():
+    print("Get IP called")
+    return ip
+
+
 @app.route('/get_key_mapping', methods=['GET'])
 def get_key_mapping():
     with open('keyMappings.json') as json_file:

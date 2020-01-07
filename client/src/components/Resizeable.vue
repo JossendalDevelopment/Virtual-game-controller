@@ -2,7 +2,7 @@
   <div
     :ref="`resizable${buttonIndex}`"
     class="resizable"
-    :draggable="$theme.editingState"
+    :draggable="$settings.editingState"
     :data-item="buttonIndex"
     @click="onPress"
   >
@@ -75,7 +75,7 @@ export default {
       return this.buttonData.styles;
     },
     editing() {
-      return this.$theme.editingState;
+      return this.$settings.editingState;
     }
   },
   watch: {

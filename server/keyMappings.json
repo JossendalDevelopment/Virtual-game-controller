@@ -11,14 +11,14 @@
       "keyCode": 82,
       "location": 0,
       "position": {
-        "bottom": 272.1374969482422,
-        "height": 223.1374969482422,
-        "left": 25,
-        "right": 251.9250030517578,
-        "top": 49,
-        "width": 226.9250030517578,
         "x": 25,
-        "y": 49
+        "y": 49,
+        "width": 226.9250030517578,
+        "height": 223.1374969482422,
+        "top": 49,
+        "right": 251.9250030517578,
+        "bottom": 272.1374969482422,
+        "left": 25
       },
       "style": {
         "backgroundColor": "#51424200",
@@ -38,26 +38,26 @@
         "0x4E"
       ],
       "keyCode": 78,
+      "location": 0,
       "position": {
         "bottom": 506,
-        "height": 206,
-        "left": 37,
+        "height": 225,
+        "left": 28,
         "right": 243,
         "top": 300,
-        "width": 206,
+        "width": 225,
         "x": 37,
         "y": 300
       },
       "style": {
         "backgroundColor": "#F2F2F200",
-        "borderColor": "#000000",
+        "borderColor": "#00000000",
         "borderRadius": 1,
-        "fontSize": "33",
+        "fontSize": "42",
         "opacity": 1,
         "textColor": "#E6E6E6FF"
       },
-      "type": "custom",
-      "location": 0
+      "type": "custom"
     }
   ]
 }

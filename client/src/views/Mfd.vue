@@ -35,7 +35,9 @@
     <div class="power_button_group_right">
       <div class="flight-ready" :style="flightReadyBtnStyles"></div>
     </div>
-    <TriangularSlider />
+    <div style="display: flex; width: 100%; justify-content: center;">
+      <TriangularSlider />
+    </div>
   </div>
 </template>
 <script>
@@ -49,12 +51,12 @@ export default {
   computed: {
     outlineButtonStyles() {
       return {
-        color: `var(--primary-${this.$theme.color})`
+        color: `var(--primary-${this.$settings.color})`
       };
     },
     flightReadyBtnStyles() {
       return {
-        border: `2px solid var(--primary-${this.$theme.color})`
+        border: `2px solid var(--primary-${this.$settings.color})`
       };
     }
   }
@@ -84,8 +86,8 @@ export default {
   margin: 0 1em;
 }
 .flight-ready {
-  width: 50%;
-  height: 80%;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
 }
 </style>
