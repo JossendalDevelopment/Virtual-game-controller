@@ -32,8 +32,8 @@
 </template>
 <script>
 // import Moveable from 'vue-moveable';
-import Moveable from "@/components/Moveable.vue";
-import ButtonSettingsModal from "@/components/ButtonSettingsModal.vue";
+// import Moveable from "@/components/Moveable.vue";
+// import ButtonSettingsModal from "@/components/ButtonSettingsModal.vue";
 
 export default {
   name: "App",
