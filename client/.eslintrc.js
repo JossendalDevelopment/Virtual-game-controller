@@ -7,7 +7,7 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-    "vue/max-attributes-per-line": ["error", {
+    "vue/max-attributes-per-line": ["warning", {
       "singleline": 4,
       "multiline": {
         "max": 1,

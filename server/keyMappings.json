@@ -9,16 +9,17 @@
         "0x52"
       ],
       "keyCode": 82,
+      "keyText": "r",
       "location": 0,
       "position": {
-        "x": 25,
-        "y": 49,
-        "width": 226.9250030517578,
-        "height": 223.1374969482422,
-        "top": 49,
-        "right": 251.9250030517578,
         "bottom": 272.1374969482422,
-        "left": 25
+        "height": 223.1374969482422,
+        "left": 25,
+        "right": 251.9250030517578,
+        "top": 49,
+        "width": 226.9250030517578,
+        "x": 25,
+        "y": 49
       },
       "style": {
         "backgroundColor": "#51424200",
@@ -27,7 +28,8 @@
         "fontSize": "44",
         "opacity": "1",
         "textColor": "#CBCBCBFF"
-      }
+      },
+      "code": "KeyR"
     },
     {
       "buttonName": "Spool Drive",
@@ -35,9 +37,10 @@
       "image": "glass_button_red.png",
       "imageUrl": "https://firebasestorage.googleapis.com/v0/b/game-controller-vmfd.appspot.com/o/widgets%2Fglass_button_red.png?alt=media&token=e5696fbc-328e-48ea-8d3f-526da955b9a7",
       "key": [
-        "0x4E"
+        "0x42"
       ],
-      "keyCode": 78,
+      "keyCode": 66,
+      "keyText": "b",
       "location": 0,
       "position": {
         "bottom": 506,

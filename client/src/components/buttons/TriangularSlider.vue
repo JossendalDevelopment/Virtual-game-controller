@@ -1,29 +1,63 @@
 <template>
   <!-- <div class="triangle_container"> -->
-  <div
-    style
-    draggable="false"
-    class="triangle"
-    ref="triangle"
-    @mousedown="dragStart"
-    @mouseup="dragEnd"
-  >
+  <div style draggable="false" class="triangle" ref="triangle">
     <svg
-      style="position: relative; left: -108px"
-      width="225px"
-      height="225px"
-      ref="triangle"
+      style="position: relative; left: -119px; top: -6px;"
+      width="238"
+      height="238"
       @mousedown="dragStart"
       @mouseup="dragEnd"
+      viewBox="0 0 400 400"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <desc>Colored Bordered Triangle</desc>
-      <path
-        d="M 4,175 L 108,0 L 213,175 z"
-        fill="transparent"
+      <line
+        x1="363.759"
+        y1="295.438"
+        x2="199.759"
+        y2="205.438"
         :stroke="`var(--primary-${$settings.color})`"
-        stroke-width="5"
       />
+      <line
+        x1="34.7606"
+        y1="295.561"
+        x2="199.761"
+        y2="205.561"
+        :stroke="`var(--primary-${$settings.color})`"
+      />
+      <line x1="200" y1="11" x2="200" y2="206" :stroke="`var(--primary-${$settings.color})`" />
+      <g filter="url(#filter0_d)">
+        <path
+          d="M199.567 5.75001C199.759 5.41667 200.241 5.41667 200.433 5.75001L368.442 296.75C368.634 297.083 368.394 297.5 368.009 297.5H31.9911C31.6062 297.5 31.3656 297.083 31.5581 296.75L199.567 5.75001Z"
+          :stroke="`var(--primary-${$settings.color})`"
+          stroke-width="5"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_d"
+          x="24.9866"
+          y="1"
+          width="350.027"
+          height="305"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          />
+          <feOffset dy="2" />
+          <feGaussianBlur stdDeviation="2" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+        </filter>
+      </defs>
     </svg>
+
     <div class="triangle_drag_handle" ref="drag_handle"></div>
     <!-- </div> -->
   </div>
@@ -31,44 +65,24 @@
 <script>
 export default {
   mounted() {
-    const triangle = document.querySelector(".triangle");
-    let node = document.querySelector(".triangle_drag_handle");
-    const coord = this.getTriangleCoordinates(triangle);
-    const center = this.centroid(coord);
-    console.log("CENTER", triangle);
-
-    // //   node.setAttribute("draggable", true);
-    // node.addEventListener("dragstart", () => {
-    //   var offset = triangle.getBoundingClientRect();
-    //   console.log("DRAG START", this.bounded(offset, coord));
-    //   // if (!bounded(offset, coord)) return false;
-    // });
-    // node.addEventListener("drop", event => {
-    //   console.log("DROP", event);
-    // });
-    // node.addEventListener("dragend", event => {
-    //   console.log("END", event.clientX);
-    // });
-    // node.addEventListener("dragover", event => event.preventDefault());
-    //   node.draggable({
-    //     drag: function(event, ui) {
-    //       var offset = ui.offset;
-    //       if (!bounded(offset, coord)) return false;
-    //     }
-    //   });
-
-    // centers pip
-    node.style.left = Math.round(center.left) - 10 + "px";
-    node.style.top = Math.round(center.top) - 10 + "px";
+    this.centerNode();
   },
   methods: {
+    centerNode() {
+      const triangle = document.querySelector(".triangle");
+      let node = document.querySelector(".triangle_drag_handle");
+      const coord = this.getTriangleCoordinates(triangle);
+      const center = this.centroid(coord);
+
+      // centers pip
+      node.style.left = Math.round(center.left) - 10 + "px";
+      node.style.top = Math.round(center.top) - 10 + "px";
+    },
     dragStart() {
-      //   const node = document.querySelector(".triangle_drag_handle");
       const triangle = document.querySelector(".triangle");
       triangle.addEventListener("mousemove", this.onDrag, false);
     },
     dragEnd() {
-      //   const node = document.querySelector(".triangle_drag_handle");
       const triangle = document.querySelector(".triangle");
       triangle.removeEventListener("mousemove", this.onDrag, false);
     },
@@ -76,11 +90,15 @@ export default {
       const triangle = document.querySelector(".triangle");
       const node = document.querySelector(".triangle_drag_handle");
       const coord = this.getTriangleCoordinates(triangle);
-      const offset = node.getBoundingClientRect();
-      console.log("BOUNDED", this.bounded(offset, coord));
+      //   const offset = node.getBoundingClientRect();
+      const offset = {
+        left: event.clientX,
+        top: event.clientY
+      };
+      // TODO use same vertices in bounded() to control key inputs
       if (this.bounded(offset, coord)) {
-        node.style.left = event.clientX + "px";
-        node.style.top = event.clientY + "px";
+        node.style.left = event.clientX - 10 + "px";
+        node.style.top = event.clientY - 10 + "px";
       }
     },
     getTopPoint(t) {
@@ -154,7 +172,10 @@ export default {
       let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
       // Check if point is in triangle
-      console.log("VECTORS", u, v, u + v);
+      console.log("VECTORS", u, v);
+      // u = 0; v = 1 is top
+      // u = 1; v = 0 is right
+      // u = 0; v = 0 is left
       return u >= 0 && v >= 0 && u + v < 1;
     },
     dot(vector1, vector2) {

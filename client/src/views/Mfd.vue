@@ -33,10 +33,24 @@
       </OutlineButton>
     </div>
     <div class="power_button_group_right">
-      <div class="flight-ready" :style="flightReadyBtnStyles"></div>
+      <div class="flight-ready" :style="flightReadyBtnStyles">
+        <h2
+          :style="
+            `color: var(--primary-${$settings.color}); 
+            z-index: 602; 
+            text-align: center; 
+            letter-spacing: 0.4rem;
+            font-size: 2rem;`
+          "
+        >FLIGHT READY</h2>
+      </div>
     </div>
-    <div style="display: flex; width: 100%; justify-content: center;">
+    <div
+      style="display: flex; flex-direction: column; width: 50%; justify-content: center; align-items: center;"
+    >
+      <h2 :style="`color: var(--primary-${$settings.color}); z-index: 602;`">DISTRIBUTOR</h2>
       <TriangularSlider />
+      <h2 :style="`color: var(--primary-${$settings.color}); z-index: 602;`">RECENTER</h2>
     </div>
   </div>
 </template>
@@ -86,6 +100,9 @@ export default {
   margin: 0 1em;
 }
 .flight-ready {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 200px;
   height: 200px;
   border-radius: 50%;

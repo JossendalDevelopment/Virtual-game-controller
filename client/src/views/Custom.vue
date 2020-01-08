@@ -74,9 +74,8 @@ export default {
       currentButton: {}
     };
   },
-  async mounted() {
+  mounted() {
     // TODO make this host ip configurable
-    await this.$settings.getClientIP();
     this.socket = io(`http://${this.$settings.clientIP}:${5000}`);
 
     this.socket.on("connection", () => {
@@ -96,13 +95,18 @@ export default {
       }
     });
     this.keyListeners = e => {
+      // TODO allow for multiple keypresses (shift + key)
+      e.preventDefault();
       // console.log("KEY", e);
       this.currentButton = {
         ...this.currentButton,
-        key: [this.toHex[e.key]],
+        key: [this.toHex[e.code]],
+        keyText: e.key,
         keyCode: e.keyCode,
+        code: e.code,
         location: e.location // ex. 1 is left alt, 2 is right alt, 0 is non-positional
       };
+      // console.log("NEW BUTTON", this.currentButton);
       this.$bindings.update(this.currentButton);
       this.removeListeners();
       // this.socket.emit("keypress", e);
@@ -120,10 +124,10 @@ export default {
       this.addListeners();
     },
     addListeners() {
-      window.addEventListener("keyup", this.keyListeners);
+      window.addEventListener("keydown", this.keyListeners);
     },
     removeListeners() {
-      window.removeEventListener("keyup", this.keyListeners);
+      window.removeEventListener("keydown", this.keyListeners);
     },
     handleClick(e) {
       // TODO design this to handle a down and up keypress

@@ -170,6 +170,7 @@ export default {
   },
   async created() {
     await this.$bindings.getUserKeybindings();
+    await this.$settings.getClientIP();
     this.loaded = true;
   },
   computed: {

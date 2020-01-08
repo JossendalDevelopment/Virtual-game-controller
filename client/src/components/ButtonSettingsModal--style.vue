@@ -11,7 +11,7 @@
           <button
             @click="openPicker(`backgroundColor`)"
             class="picker_button"
-            :style="{background: buttonData.style.backgroundColor}"
+            :style="{ background: buttonData.style.backgroundColor }"
           />
         </div>
         <div class="input_wrapper">
@@ -19,7 +19,7 @@
           <button
             @click="openPicker(`borderColor`)"
             class="picker_button"
-            :style="{background: buttonData.style.borderColor}"
+            :style="{ background: buttonData.style.borderColor }"
           />
         </div>
         <div class="input_wrapper">
@@ -27,7 +27,7 @@
           <button
             @click="openPicker(`textColor`)"
             class="picker_button"
-            :style="{background: buttonData.style.textColor}"
+            :style="{ background: buttonData.style.textColor }"
           />
         </div>
         <div class="input_wrapper">
@@ -63,7 +63,7 @@
             v-model="buttonData.style.borderRadius"
           />
         </div>
-        <span>Bound to key: {{ buttonData.key }}</span>
+        <span>Bound to key: {{ buttonData.code }}</span>
       </div>
     </div>
 
